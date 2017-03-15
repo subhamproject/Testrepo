@@ -2,7 +2,7 @@
 - name: This playbook is to create directory in source
   hosts: all
 
-  task:
+  tasks:
 
- - name: Creating Folder
-   file: path=/root/demo_for_testing state=directory owner=vagrant group=vagrant mode=0775
+  - name: Creating Folder
+    file: path=/root/demo_for_testing state=directory owner=vagrant group=vagrant mode=0775
