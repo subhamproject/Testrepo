@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: True
+
+  tasks:
+
+   - name: copy consul_ui files
+     synchronize: src=/tmp/nrpe/ dest=/opt/test1/ delete=yes recursive=yes
