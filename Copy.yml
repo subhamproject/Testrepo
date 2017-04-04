@@ -1,9 +1,8 @@
 ---
 - name: This playbook is to copy files from source to destinatoin
   hosts: all
-  become: true
-
+ 
   tasks:
 
   - name: Synchronize testerfolder and test
-    copy: src=/root/subham/ dest=/root/jack/ remote_src=true directory_mode=yes
+    copy: src=/root/subham/ dest=/root/jack/  directory_mode=yes
