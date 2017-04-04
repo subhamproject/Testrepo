@@ -5,4 +5,4 @@
   tasks:
 
   - name: Synchronize testerfolder and test
-    copy: src=/root/subham/ dest=/root/jack/
+    copy: src=/root/subham/ dest=/root/jack/ remote_src=true
