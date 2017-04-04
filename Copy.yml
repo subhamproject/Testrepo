@@ -3,7 +3,7 @@
   hosts: all
  
   tasks:
- - name: Copy File on Remote
-   copy: src="{{ item }}" dest=/root/test2/ mode=0755 remote_src=True
-   with_fileglob:
-      - "/root/test1/*"
+- name: Copy File on Remote
+  copy: src="{{ item }}" dest=/root/jack/ mode=0755 remote_src=True
+  with_fileglob:
+      - "/root/subham/*"
