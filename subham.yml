@@ -3,6 +3,7 @@
   gather_facts: True
 
   tasks:
+  
   -name: Copy files
    copy: src="{{ item }}" dest="/root/jack" mode=0755 remote_src=True
    with_fileglob:
