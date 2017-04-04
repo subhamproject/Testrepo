@@ -5,4 +5,4 @@
   tasks:
 
    - name: copy consul_ui files
-     synchronize: src=/tmp/nrpe/ dest=/opt/test1/ delete=yes recursive=yes
+     command: mv /tmp/nrpe/ /opt/test1/
