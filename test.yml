@@ -3,6 +3,10 @@
   gather_facts: True
 
   tasks:
-
-   - name: copy consul_ui files
-     command: mv /tmp/nrpe/ /opt/test1/
+  - git: repo=repo=https://github.com/subhamproject/Testrepo.git
+    dest=/tmp/git1
+    force=no
+    accept_hostkey=yes
+    
+  - name: copy file
+    shell:  find /tmp/git1/ -type f -name "*.yml" -exec rsync -azr {}  /tmp/mytest/ \;
