@@ -8,4 +8,4 @@
        update=yes
        
   - name: Copy files
-    command: rsync -arz /tmp/test /tmp/vivan
+    command: rsync -arz /tmp/test1 /tmp/test2
