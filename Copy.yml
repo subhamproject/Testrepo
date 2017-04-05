@@ -3,7 +3,9 @@
   hosts: all
  
   tasks:
+  -git: repo=https://github.com/subhamproject/Testrepo.git
+      dest=/tmp/subham
+      update=yes
+      
 - name: Copy File on Remote
-  copy: src="{{ item }}" dest=/root/jack/ mode=0755 remote_src=True
-  with_fileglob:
-      - "/root/subham/*"
+  command: cp -pr /tmp/subham /tmp/jack
