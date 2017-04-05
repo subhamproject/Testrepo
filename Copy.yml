@@ -6,6 +6,4 @@
   - git: repo=https://github.com/subhamproject/Testrepo.git
        dest=/tmp/subham
        update=yes
-       
- - name: This is to Copy files to remote path
-   command: cp -pr /tmp/subham /tmp/jack
+       command: cp -pr /tmp/subham /tmp/jack
