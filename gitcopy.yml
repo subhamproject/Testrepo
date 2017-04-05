@@ -1,9 +1,14 @@
 ---
-- hosts: all
-  gather_facts: True
+- name: This playbook is to copy files from source to destinatoin
+  hosts: all
+ 
+  tasks:
+  - git: repo=https://github.com/subhamproject/Testrepo.git
+       dest=/tmp/test
+       update=yes
   
   tasks:
   
   - name: Sync
     action: synchronize src="/tmp/test1/" dest="/tmp/test2/"
-    delegate_to: "{{ inventory_hostname }}"
+    delegate_to: "{{ inventory_hostname }}
