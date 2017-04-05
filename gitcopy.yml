@@ -9,4 +9,4 @@
        
   - name: Sync
     synchronize: src="/tmp/test1/" dest="/tmp/test2/"
-    delegate_to: "{{ inventory_hostname }}
+    delegate_to: "{{ inventory_hostname }}"
