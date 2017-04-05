@@ -8,5 +8,14 @@
        force=no
        accept_hostkey=yes
     
-  - name: copy file
+  - name: yml file copying
     shell:  find /tmp/git1/ -type f -name "*.yml" -exec rsync -azr {}  /tmp/mytest/ \;
+    
+  - name: json file copying
+    shell: find /tmp/git1/ -type f -name "*.json" -exec rsync -azr {}  /tmp/json/ \;
+    
+   - name: txt file copy
+     shell: find /tmp/git1/ -type f -name "*.txt" -exec rsync -azr {}  /tmp/txt/ \;
+   
+   - name: ksh file copy
+     shell: find /tmp/git1/ -type f -name "*.ksh" -exec rsync -azr {}  /tmp/ksh/ \;
