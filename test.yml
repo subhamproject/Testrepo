@@ -3,7 +3,7 @@
   gather_facts: True
 
   tasks:
-  - git: repo=repo=https://github.com/subhamproject/Testrepo.git
+  - git: repo=https://github.com/subhamproject/Testrepo.git
        dest=/tmp/git1
        force=no
        accept_hostkey=yes
