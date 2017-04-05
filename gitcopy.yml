@@ -4,6 +4,6 @@
   
   tasks:
   
-- name: Sync
-  action: synchronize src="/tmp/test1/" dest="/tmp/test2/"
-  delegate_to: "{{ inventory_hostname }}"
+  - name: Sync
+    action: synchronize src="/tmp/test1/" dest="/tmp/test2/"
+    delegate_to: "{{ inventory_hostname }}"
