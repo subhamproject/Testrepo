@@ -6,4 +6,6 @@
   - git: repo=https://github.com/subhamproject/Testrepo.git
        dest=/tmp/subham
        update=yes
-       command: cp -pr /tmp/subham /tmp/jack
+       
+  - name: Copy files
+    command: cp -pr /tmp/subham /tmp/jack
