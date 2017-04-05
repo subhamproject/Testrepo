@@ -1,0 +1,250 @@
+#!/bin/bash
+
+HOST=$(hostname)
+PWD=$(pwd)
+USER=$(whoami)
+
+PARAM="/home/$USER/test/env.param"
+
+if [ ! -f $PARAM ]
+   then
+   echo "Param file $PARAM does not exit"
+   exit  8
+   else
+   . $PARAM
+fi
+
+FILE=$file
+CMD=$comd
+
+USER (){
+       $CMD -E 'glrsrel|glreliv' $FILE >> /dev/null
+     if [ $? -ne 0 ]
+        then
+        exit 8
+        else
+        echo "Users found"
+     fi
+}
+CMDLINE=$0
+#echo $CMDLINE
+#basename $CMDLINE
+
+
+FIND () {
+        cat $FILE |wc -l
+}
+
+[ $# -eq 0 ] && FIND && USER
+
+==========================================================================================
+
+#!/bin/bash
+# Make readonly variable i.e. constant variable
+declare -r PASSWD_FILE=/etc/passwd
+
+#
+# Purpose: Display message and die with given exit code
+#
+die(){
+        local message="$1"
+        local exitCode=$2
+        echo "$message"
+        [ "$exitCode" == "" ] && exit 1 || exit $exitCode
+}
+
+#
+# Purpose: Find out if user exits or not
+#
+does_user_exist(){
+        local u=$1
+        grep -qEw "^$u" $PASSWD_FILE && die "Username $u exists."
+}
+
+#
+# Purpose: Is script run by root? Else die..
+#
+is_user_root(){
+  [ "$(id -u)" != "0" ] && die "You must be root to run this script" 2
+}
+
+#
+# Purpose: Display usage
+#
+usage(){
+        echo "Usage: $0 username"
+        exit 2
+}
+
+
+[ $# -eq 0 ] && usage
+
+# invoke the function is_root_user
+is_user_root
+
+# call the function is_user_exist
+does_user_exist "$1"
+
+# display something on screen
+echo "Adding user $1 to database..."
+# just display command but do not add a user to system
+echo "/sbin/useradd -s /sbin/bash -m $1"
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+#!/bin/bash
+# A shell script to backup MySQL database and directories to a nas server.
+# Written by Vivek Gite <vivek@gite.in>
+# Last updated on, Feb-2-2007
+###############################
+#  	     Variables        #
+###############################
+
+### SETUP BIN PATHS ###
+MKDIR=/bin/mkdir
+CP=/bin/cp
+GTAR=/bin/tar
+RSYNC=/usr/bin/rsync
+MOUNT=/bin/mount
+UMOUNT=/bin/umount
+GREP=/bin/grep
+AWK=/bin/awk
+SED=/bin/sed
+CUT=/bin/cut
+MYSQL=/usr/bin/mysql
+MYSQLADMIN=/usr/bin/mysqladmin
+MYSQLDUMP=/usr/bin/mysqldump
+GZIP=/bin/gzip
+LOGGER=/usr/bin/logger
+MAILCMD=/bin/mail
+DU=/usr/bin/du
+RM=/bin/rm
+
+### SETUP NAS LOGIN ###
+NASUSER=vivek
+NASPASSWORD=MyPassWord
+NASSERVER=nas10.nixcraft.net.in
+NASMNT=/nas10
+
+### ADMIN Notification Email Ids ###
+WARN_ADMIN_EMAIL_IDS="user@example.com,user@example.net,vivek@gite.in"
+
+### SETUP MYSQL LOGIN/Password ###
+MUSER='root'
+MPASS='mySqlLoginPassword'
+MHOST="127.0.0.1"
+
+### SETUP MYSQL BACKUP PATHS ###
+MBAKPATH=${NASMNT}/mysql
+
+### SETUP TAR BALL BACKUP PATHS ###
+TBAKPATH=${NASMNT}/tarballs
+
+### Setup file system dirs to backup ###
+TAR_SRC_DIRS='/etc /var/named/chroot /root /home /var/www/html /usr/local/mailboxes'
+ 
+### Date format dd-mm-yyyy ###
+NOW=$(date +"%d-%m-%Y")
+
+### Time format hh_mm_ssAM|PM ###
+TIME_FORMAT='%H_%M_%S%P'
+
+###############################
+#  User Defined Functions    #
+###############################
+
+#
+# Purpose: Send warning email.
+#
+tar_warn_email(){
+        $LOGGER "$(basename $0) GNU/tar: *** Failed at $(date) ***"
+        $MAILCMD -s "GNU/TAR Backup Failed" "${WARN_ADMIN_EMAIL_IDS}"<<EOF
+GNU/Tar backup failed @ $(date) for $(hostname)
+EOF
+}
+
+#
+# Purpose: Backup file system directories.
+# 
+backup_tar(){
+        $LOGGER "$(basename $0) GNU/tar: Started at $(date)"
+        # call function to mount nas device 
+        mount_nas
+        [ ! -d ${TBAKPATH}/$NOW/ ] && $MKDIR -p ${TBAKPATH}/$NOW/
+        local path="${TBAKPATH}/$NOW/fs-$(date +"${TIME_FORMAT}").tar.gz"
+        $GTAR --exclude "*/proc/*" --exclude "*/dev/*" --exclude '*/cache/*' -zcvf $path $TAR_SRC_DIRS
+        [ $? -ne 0 ] && tar_warn_email
+        # call function to unmount nas device
+        umount_nas
+        $LOGGER "$(basename $0) GNU/tar: Ended at $(date)"
+}
+#
+# Purpose: Mount backup nas device.
+# 
+mount_nas(){
+        [ ! -d $NASMNT ] && $MKDIR -p $NASMNT
+        $MOUNT | $GREP $NASMNT >/dev/null
+        [ $? -eq 0 ] || $MOUNT -t cifs //$NASSERVER/$NASUSER -o username=$NASUSER,password=$NASPASSWORD $NASMNT
+}
+#
+# Purpose: Unmount backup nas device.
+# 
+umount_nas(){
+        $MOUNT | $GREP $NASMNT >/dev/null
+        [ $? -eq 0 ] && $UMOUNT $NASMNT 
+}
+#
+# Purpose: Backup mysql database.
+# 
+mysql(){
+        $LOGGER "$(basename $0) mysql: Started at $(date)"
+        local DBS="$($MYSQL -u $MUSER -h $MHOST -p$MPASS -Bse 'show databases')"
+        local db=""
+        local linkname=""
+        [ ! -d $MBAKPATH/$NOW ] && $MKDIR -p $MBAKPATH/$NOW
+        for db in $DBS
+        do
+                [ "$db" == "sgopenxadserver"  ] && continue 
+                local tTime=$(date +"${TIME_FORMAT}")
+                local FILE="${MBAKPATH}/$NOW/${db}.${tTime}.gz"
+                $MYSQLDUMP -u $MUSER -h $MHOST -p$MPASS $db | $GZIP -9 > $FILE
+                #create latest file link
+                linkname="${MBAKPATH}/$NOW/${db}.latest"
+                [ -L $linkname ] && /bin/rm $linkname
+                /bin/ln -s $FILE $linkname
+        done
+        $LOGGER "$(basename $0) mysql: Ended at $(date)"
+}
+
+#
+# Purpose: Wrapper function to call other functions.
+#
+backup_mysql(){
+        mount_nas         # call function to mount nas device
+        mysql
+        umount_nas        # call function to unmount nas device
+}
+
+###################################
+# Main Script Logic Starts Here   #
+###################################
+case "$1" in
+        mysql)
+                backup_mysql
+                ;;
+        fsbak)
+                backup_tar
+                ;;
+        mount)
+                mount_nas
+                ;;
+        umount)
+                umount_nas
+                ;;
+        *)
+                echo "Usage: $0 {mysql|fsbak|mount|umount}"
+                echo ""
+                echo "Use this shell script to backup mysql database and directories to backup nas server."
+esac
