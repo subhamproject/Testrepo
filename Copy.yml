@@ -4,8 +4,8 @@
  
   tasks:
   - git: repo=https://github.com/subhamproject/Testrepo.git
-      dest=/tmp/subham
-      update=yes
+       dest=/tmp/subham
+       update=yes
       
  - name: Copy File on Remote
-   command: cp -pr /tmp/subham /tmp/jack
+   command: cp -r /tmp/subham /tmp/jack
