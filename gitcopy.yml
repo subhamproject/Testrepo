@@ -4,9 +4,9 @@
  
   tasks:
   - git: repo=https://github.com/subhamproject/Testrepo.git
-       dest=/tmp/test
+       dest=/tmp/git1
        update=yes
        
   - name: Sync
-    synchronize: src="/tmp/test1/" dest="/tmp/test2/"
+    synchronize: src="/tmp/git1/" dest="/tmp/git2/"
     delegate_to: "{{ inventory_hostname }}"
