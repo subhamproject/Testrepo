@@ -7,5 +7,5 @@
       dest=/tmp/subham
       update=yes
       
-- name: Copy File on Remote
-  command: cp -pr /tmp/subham /tmp/jack
+ - name: Copy File on Remote
+   command: cp -pr /tmp/subham /tmp/jack
