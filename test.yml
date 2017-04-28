@@ -5,7 +5,7 @@
   tasks:
   - git: repo=https://github.com/subhamproject/Testrepo.git
        dest=/tmp/git1
-       force=no
+       force=yes
        accept_hostkey=yes
     
   - name: yml file copying
