@@ -1,0 +1,14 @@
+---
+- hosts: all
+  gather_facts: True
+  remote_user: "{{ user }}"
+  become: true
+  become_method: sudo
+  become_user: root
+  
+  tasks:
+  - name: "Adding users"
+  users: name={{ item.name}} state=present groups={{ item.groups }}
+  with_items: 
+      - { name: 'testuser1', groups: 'wheel' }
+      - { name: 'testuser2', groups: 'root' }
