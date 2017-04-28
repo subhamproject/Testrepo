@@ -3,7 +3,7 @@
   gather_facts: True
   remote_user: "{{ user }}"
   become: true
-  become_method: su
+  become_method: sudo
   become_user: root
   
   tasks:
