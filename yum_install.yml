@@ -5,4 +5,4 @@
 
   tasks:
   - name: Install all my packages
-  yum: name='@Development Tools' state=lastes
+    yum: name='@Development Tools' state=lastest
