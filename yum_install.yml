@@ -4,6 +4,6 @@
   gather_facts: True
 
   tasks:
- - name: Install 'development tools' group of packages
+  - name: Install 'development tools' group of packages
    become: true
    yum: name='@development tools' state=installed
