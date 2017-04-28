@@ -1,0 +1,20 @@
+---
+- hosts: all
+  gather_facts: True
+  remote_user: "{{ user }}"
+  become: true
+  become_method: su
+  become_user: root
+  
+
+  tasks:
+  - name: "Install Common Libraries from CentOS mirror"
+    yum: state=present name={{ item }}
+    with_items:
+       - sudo
+       - vim
+       - gcc
+       - gcc-c++
+       - unzip
+       - wget
+       - tar
