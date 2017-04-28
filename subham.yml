@@ -7,8 +7,8 @@
   -name: install Git and ftp packages 
    yum: pkg="{{ item }}" state=installed
    with_items:
-    - unzip
-    - tar
-    - htop
-    - git 
-    - iotop
+     - unzip
+     - tar
+     - htop
+     - git 
+     - iotop
