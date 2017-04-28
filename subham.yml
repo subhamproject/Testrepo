@@ -5,8 +5,7 @@
 
   tasks:
   -name: install Git and ftp packages 
-   yum: 
-   pkg: "{{ item }}"
+   yum: pkg="{{ item }}"
    state=installed
    with_items:
    - unzip
