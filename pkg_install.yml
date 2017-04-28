@@ -6,7 +6,6 @@
   become_method: su
   become_user: root
   
-
   tasks:
   - name: "Install Common Libraries from CentOS mirror"
     yum: state=present name={{ item }}
