@@ -4,5 +4,7 @@
   gather_facts: True
 
   tasks:
-  - name: Install all my packages
-    yum: name='@Development Tools' state=lastest
+  - name: Install rpms
+  yum: name={{ item }} state=present
+  with_items:
+    - "'@Development Tools'"
