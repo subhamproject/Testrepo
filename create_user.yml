@@ -7,7 +7,7 @@
   become_user: root
   
   tasks:
-  - name: "Adding users"
+  - name: Adding users
     users: name={{ item.name}} state=present groups={{ item.groups }}
     with_items: 
       - { name: 'testuser1', groups: 'wheel' }
