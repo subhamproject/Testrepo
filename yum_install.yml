@@ -5,6 +5,6 @@
 
   tasks:
   - name: Install rpms
-  yum: name={{ item }} state=present
-  with_items:
+    yum: name={{ item }} state=present
+    with_items:
     - "'@Development Tools'"
