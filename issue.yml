@@ -6,7 +6,7 @@
   become_method: sudo
   become_user: root
   vars:
-   motd_welcome: 'welcome to my world\nLive,Love,Njoy\n'
+   motd_welcome: 'welcome to my world\nLive, Love, Njoy\n'
   
   tasks:
   - name: Copy content to issue files in servers
