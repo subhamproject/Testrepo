@@ -8,7 +8,7 @@
   
   tasks:
   - name: Creating folder structure
-    file: src: '/tmp/{{ item.src }}' state=directory dest: '/tmp/{{ item.dest }}'
+    file: src='/tmp/{{ item.src }}' state=directory dest='/tmp/{{ item.dest }}'
     mode: 777
     owner: awx
     group: awx
