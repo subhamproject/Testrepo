@@ -11,5 +11,5 @@
   tasks:
   - name: Copy content to issue files in servers
     copy:
-    dest: /etc/issue
-    content: "{{ motd_welcome }}"
+     dest: /etc/issue
+     content: "{{ motd_welcome }}"
