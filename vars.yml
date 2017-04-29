@@ -1,8 +1,6 @@
---- 
-
+---
 users:
-- username: myname,maruna
-
-
+  - username: myname
+  
 groups:
-- groupname: wheel,root
+  - groupname: wheel
