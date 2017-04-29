@@ -10,8 +10,8 @@
   - name: Adding users
     user: name={{ item.name }} update_password=always password=vagrant state=present groups={{ item.groups }} 
     with_items: 
-      - { name: 'testuser1', groups: 'ssh' }
+      - { name: 'testuser1', groups: 'vagrant' }
       - { name: 'testuser2', groups: 'root' }
-      - { name: 'baso', groups: 'ssh' }
+      - { name: 'baso', groups: 'vagrant' }
       - { name:  'subh', groups: 'root' }
-      - { name:  'ansible', groups: 'ssh' }
+      - { name:  'ansible', groups: 'vagrant' }
