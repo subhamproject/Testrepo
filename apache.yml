@@ -12,7 +12,7 @@
     action: yum name=httpd state=installed
   
   - name: copy index.html
-    copy: src=/root/files/index.html dest=/var/www/html/index.html
+    copy: src=files/index.html dest=/var/www/html/index.html
 
   - name: start apache
     service:
