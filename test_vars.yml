@@ -9,7 +9,7 @@
   
   tasks:
   - name: adding user with inclue vars
-    user: name={{ item.name }} state=present shell=/bin/ksh createhome=yes comment='create with ansible' group={{ item.group }}
+    user: name={{ item.username }} state=present shell=/bin/ksh createhome=yes comment='create with ansible' group={{ item.groupname }}
     with_items: 
-      - {{ 'name' }}
-      - {{ 'group' }}
+      - {{ 'users' }}
+      - {{ 'groups' }}
