@@ -8,7 +8,7 @@
   
   tasks:
   - name: Creating folder structure
-    file: src=/tmp/{{ item.src }} state=directory recurse=yes dest=/tmp/{{ item.dest }}
+    file: state=directory mode=777 owner=awx group=awx recurse=yes dest=/tmp/{{ item.dest }}
     with_items:
-        - { src: 'dir1', dest: 'dest1' }
-        - { src: 'dir2', dest: 'dest2' }
+        - { dest: 'dest1' }
+        - { dest: 'dest2' }
