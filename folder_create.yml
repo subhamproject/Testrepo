@@ -8,11 +8,11 @@
   
   tasks:
   - name: Creating folder structure
-    file: src: '/tmp/{{ item.src }}' dest: '/tmp/{{ item.dest }}'
+    file: src: "/tmp/{{ item.src }}" dest: "/tmp/{{ item.dest }}"
     mode: 777
     owner: awx
     group: awx
     state: directory
     with_items:
-      - { src: 'dir1', dest: 'dest1' }
-      - { src: 'dir2', dest: 'dest2' }
+       - { src: 'dir1', dest: 'dest1' }
+       - { src: 'dir2', dest: 'dest2' }
