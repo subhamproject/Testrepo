@@ -5,10 +5,12 @@
   become: true
   become_method: sudo
   become_user: root
+  vars:
+   password: vagrant
   
   tasks:
   - name: Adding users
-    user: name={{ item.name }} state=present groups={{ item.groups }}
+    user: name={{ item.name }} state=present groups={{ item.groups }} update_password=always password={{ password }}
     with_items: 
       - { name: 'testuser1', groups: 'wheel' }
       - { name: 'testuser2', groups: 'root' }
