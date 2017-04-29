@@ -1,3 +1,8 @@
----
-name: myname
-group: root
+--- 
+
+users:
+- username: myname,maruna
+
+
+groups:
+- groupname: wheel,root
