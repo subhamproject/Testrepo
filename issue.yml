@@ -1,12 +1,12 @@
 ---
-- hosts: all
+- hosts: "{{ serv }}"
   gather_facts: True
   remote_user: "{{ user }}"
   become: true
   become_method: sudo
   become_user: root
   vars:
-   motd_welcome: 'welcome to my world\nLive, Love, Njoy\n'
+   motd_welcome: 'welcome to my world'
   
   tasks:
   - name: Copy content to issue files in servers
