@@ -8,7 +8,7 @@
     
   tasks:
   - name: Adding users
-    user: name={{ item.name }} state=present groups={{ item.groups }} update_password=always password=vagrant
+    user: name={{ item.name }} update_password=always password=vagrant state=present groups={{ item.groups }} 
     with_items: 
       - { name: 'testuser1', groups: 'wheel' }
       - { name: 'testuser2', groups: 'root' }
