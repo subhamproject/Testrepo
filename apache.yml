@@ -1,0 +1,20 @@
+---
+- hosts: "{{ serv }}"
+  gather_facts: True
+  remote_user: "{{ user }}"
+  become: true
+  become_method: sudo
+  become_user: root
+  
+
+  tasks:
+  - name: installing httpd
+    action: yum name=httpd state=installed
+  
+  - name: copy index.html
+    copy: src=/root/files/index.html dest=/var/www/html/index.html
+
+  - name: start apache
+    service:
+      name: httpd
+      state: restarted
