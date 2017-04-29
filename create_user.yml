@@ -6,7 +6,7 @@
   become_method: sudo
   become_user: root
   vars:
-   password: vagrant
+  password: vagrant
   
   tasks:
   - name: Adding users
