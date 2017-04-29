@@ -1,0 +1,15 @@
+---
+- hosts: all
+  gather_facts: True
+  remote_user: "{{ user }}"
+  become: yes
+  become_method: sudo
+  become_user: root
+  include_vars: vars.yml
+  
+  tasks:
+  - name: adding user with inclue vars
+    user: name={{ item.name }} state=present shell=/bin/ksh createhome=yes comment='create with ansible' group={{ item.group }}
+    with_items: 
+      - {{ 'name' }}
+      - {{ 'group' }}
