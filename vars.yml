@@ -1,6 +1,3 @@
 ---
 users:
   - username: myname
-  
-groups:
-  - groupname: wheel
