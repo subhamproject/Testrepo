@@ -16,5 +16,5 @@
     group: awx
     state: directory
     with_items:
-      - { src: 'dir1' dest: 'dest1' }
-      - { src: 'dir2' dest: 'dest2' }
+      - { src: 'dir1', dest: 'dest1' }
+      - { src: 'dir2', dest: 'dest2' }
