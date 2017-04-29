@@ -14,3 +14,4 @@
       - { name: 'testuser2', groups: 'root' }
       - { name: 'baso', groups: 'wheel' }
       - { name:  'subh', groups: 'root' }
+      - { name:  'ansible' groups: 'wheel' }
