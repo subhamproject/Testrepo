@@ -12,3 +12,6 @@
     with_items:
         - { dest: 'dest1' }
         - { dest: 'dest2' }
+        - { dest: 'subham' }
+        - { dest: 'madhu' }
+        - { dest: 'family'}
