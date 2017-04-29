@@ -5,11 +5,13 @@
   become: true
   become_method: sudo
   become_user: root
-  include_vars: vars.yml
+  
   
   tasks:
+  - include_vars: vars.yml
+  
   - name: adding user with inclue vars
     user: name={{ item.username }} state=present shell=/bin/ksh createhome=yes comment='create with ansible' group={{ item.groupname }}
     with_items: 
-      - '{{users}}'
-      - '{{groups}}'
+      - '{{ users }}'
+      - '{{ groups }}'
