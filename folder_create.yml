@@ -8,10 +8,10 @@
   
   tasks:
   - name: Creating folder structure
-    file: src='/tmp/{{ item.src }}' state=directory dest='/tmp/{{ item.dest }}'
-    mode: 777
-    owner: awx
-    group: awx
+    file: src={{ item.src }} state=directory dest={{ item.dest }}
+    mode=777
+    owner=awx
+    group=awx
     with_items:
         - { src: 'dir1', dest: 'dest1' }
         - { src: 'dir2', dest: 'dest2' }
