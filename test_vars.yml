@@ -11,5 +11,5 @@
   - include_vars: vars.yml
   
   - name: adding user with inclue vars
-    user: name={{ item.username }} state=present shell=/bin/ksh createhome=yes comment='create with ansible' group={{ item.groupname }}
+    user: name={{ item.username }} state=present shell=/bin/ksh createhome=yes comment='create with ansible'
     with_items: '{{users}}'   
