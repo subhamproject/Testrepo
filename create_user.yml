@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: "{{ serv }}"
   gather_facts: True
   remote_user: "{{ user }}"
   become: true
@@ -15,3 +15,4 @@
       - { name: 'baso', groups: 'vagrant' }
       - { name:  'subh', groups: 'root' }
       - { name:  'ansible', groups: 'vagrant' }
+      - { name : 'world', groups: 'vagrant' }
