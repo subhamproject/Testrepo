@@ -29,7 +29,7 @@
        - squid
       notify
       - start {{ item }}
-        with_item:
+        with_items:
          - vsftpd
          - squid
     handler:
