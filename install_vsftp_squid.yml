@@ -27,7 +27,7 @@
      - start squid
      - start ntpd
 
-  handlers:
+ handlers:
     - name: start vsftpd
       service: name=vsftpd state=started
     - name : start squid
