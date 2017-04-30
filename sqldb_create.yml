@@ -32,5 +32,5 @@
   handlers:
   service: name={{ item }} state=started
   with_items:
-      - vsftpd
-      - squid
+     - vsftpd
+     - squid
