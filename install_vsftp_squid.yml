@@ -9,6 +9,9 @@
    pkg :
     - vsftpd
     - squid
+    - mysql
+    - ntp
+    - samba
         
   tasks:
   - name: Ensure vsftp/mysql/ntp and squid are installed
@@ -22,9 +25,15 @@
     notify: 
     - start vsftpd
     - start squid
+    - start ntpd
+    - start samba
    
   handlers:
    - name: start vsftpd
      service: name=vsftpd state=started
-   - name : start squid
+   - name: start squid
      service: name=squid state=started
+   - name: start ntpd
+     service: name=ntpd state=started
+   - name: start samba
+    service: name=samba state=started
