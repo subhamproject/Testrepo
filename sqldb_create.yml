@@ -13,11 +13,29 @@
       - mysql
       - ntp
 
-  - name: Ensure mysql is running
+  - name: Ensure ntp is running
     service: name=ntpd state=running enabled=yes
-
-  - name: Create application database
-    mysql_db: name={{ item }} state=present
+    
+    - name: Ensure vsftp installed
+      action: yum name={{ item }} state=installed
+      with_items:
+       - vsftpd
+       - squid
+       
+    - name: Ensure Vsftpd and squid is running:
+      service: name={{ item }} enabled=yes
+      with_items:
+       - vsftpd
+       - squid
+      notify
+      - start {{ item }}
+        with_item:
+         - vsftpd
+         - squid
+    handler:
+    - name: start vsftpd and squid
+    service: name={{ item }} state=started
     with_items:
-      - ansible_db01
-      - ansible_db02
+     - vsftpd
+     - squid
+      
