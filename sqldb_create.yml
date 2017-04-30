@@ -8,7 +8,7 @@
   
   tasks:
   - name: Ensure mysql is installed
-    action: yum name={{ item }} state=present
+    action: yum name={{ item }} state=installed
     with_items:
       - mysql-server
       - MySQL-python
