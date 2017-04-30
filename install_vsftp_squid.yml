@@ -22,10 +22,10 @@
      service: name={{ item }} enabled=yes
      with_items: "{{ pkg }}"
 
-    notify: 
-    - start vsftpd
-    - start squid
-    - start ntpd
+     notify: 
+     - start vsftpd
+     - start squid
+     - start ntpd
 
   handlers:
     - name: start vsftpd
