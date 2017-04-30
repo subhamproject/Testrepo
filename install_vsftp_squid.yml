@@ -29,4 +29,3 @@
       service: name=vsftpd state=started
     - name : start squid
       service: name=squid state=started
-   
