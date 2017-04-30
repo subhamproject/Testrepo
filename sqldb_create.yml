@@ -12,16 +12,13 @@
     with_items:
       - mysql
       - ntp
-
   - name: Ensure ntp is running
     service: name=ntpd state=running enabled=yes
-    
   - name: Ensure vsftp installed
     action: yum name={{ item }} state=installed
     with_items:
        - vsftpd
        - squid
-       
   - name: Ensure Vsftpd and squid is running
     service: name={{ item }} enabled=yes
     with_items:
@@ -38,4 +35,3 @@
       with_items:
         - vsftpd
         - squid
-      
