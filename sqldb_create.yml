@@ -27,13 +27,13 @@
     notify: 
     - start {{ item }}
     with_items:
-       - ftpserv
-       - proxy
+       - vsftp
+       - squid
   handlers:
   - name: start {{ item }}
     with_items:
-     - ftpserv
-     - proxy
+     - vsftp
+     - squid
     service: name={{ item }} state=started
     with_items:
       - vsftpd
