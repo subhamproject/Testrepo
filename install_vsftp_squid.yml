@@ -9,9 +9,7 @@
    pkg :
     - vsftpd
     - squid
-    - mysql
-    - ntp
-    
+        
    tasks:
   
    - name: Ensure vsftp/mysql/ntp and squid are installed
