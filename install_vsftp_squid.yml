@@ -14,11 +14,11 @@
     
    tasks:
   
-  - name: Ensure vsftp/mysql/ntp and squid are installed
+   - name: Ensure vsftp/mysql/ntp and squid are installed
     action: yum name={{ item }} state=installed
     with_items: "{{ pkg }}"
 
-  - name: Ensure Vsftpd/mysql/ntp and squid are in chkconfig
+   - name: Ensure Vsftpd/mysql/ntp and squid are in chkconfig
     service: name={{ item }} enabled=yes
     with_items: "{{ pkg }}"
 
