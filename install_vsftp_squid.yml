@@ -28,6 +28,8 @@
     - start vsftpd
     - start squid
     - start ntpd
+    - start jenkins
+    - start docker
       
   handlers:
    - name: start vsftpd
@@ -36,3 +38,8 @@
      service: name=squid state=started
    - name: start ntpd
      service: name=ntpd state=started
+   - name: start jenkins
+     service: name=jenkins state=started
+   - name: start docker
+     service: name=docker state=started
+     
