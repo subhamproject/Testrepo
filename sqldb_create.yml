@@ -1,0 +1,23 @@
+---
+- hosts: "{{ serv }}"
+  gather_facts: True
+  remote_user: "{{ user }}"
+  become: true
+  become_method: sudo
+  become_user: root
+  
+  tasks:
+  - name: Ensure mysql is installed
+    action: yum name={{ item }} state=present
+    with_items:
+      - mysql-server
+      - MySQL-python
+
+  - name: Ensure mysql is running
+    service: name=mysqld state=running enabled=yes
+
+  - name: Create application database
+    mysql_db: name={{ item }} state=present
+    with_items:
+      - ansible_db01
+      - ansible_db02
