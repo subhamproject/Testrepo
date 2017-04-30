@@ -10,11 +10,11 @@
   - name: Ensure mysql is installed
     action: yum name={{ item }} state=installed
     with_items:
-      - mysql-server
-      - MySQL-python
+      - mysql
+      - ntp
 
   - name: Ensure mysql is running
-    service: name=mysqld state=running enabled=yes
+    service: name=ntpd state=running enabled=yes
 
   - name: Create application database
     mysql_db: name={{ item }} state=present
