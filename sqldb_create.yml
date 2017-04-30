@@ -22,7 +22,7 @@
        - vsftpd
        - squid
        
-  - name: Ensure Vsftpd and squid is running:
+  - name: Ensure Vsftpd and squid is running
     service: name={{ item }} enabled=yes
     with_items:
        - vsftpd
