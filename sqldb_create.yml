@@ -14,7 +14,7 @@
       - ntp
   - name: Ensure ntp is running
     service: name=ntpd state=running enabled=yes
-  - name: Ensure vsftp installed
+  - name: Ensure vsftp and squid are  installed
     action: yum name={{ item }} state=installed
     with_items:
       - vsftpd
@@ -24,3 +24,14 @@
     with_items:
       - vsftpd
       - squid
+    notify: 
+    - start {{ item }}
+      with_items:
+        - vsftpd
+        - squid
+  handlers:
+    - name: start {{ item }}
+      service: name={{ item }} state=started
+      with_items:
+       - vsftpd
+       - squid
