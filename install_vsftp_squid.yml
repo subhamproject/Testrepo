@@ -31,9 +31,12 @@
     notify: 
     - start vsftpd
     - start squid
+    - start ntpd
 
   handlers:
     - name: start vsftpd
       service: name=vsftpd state=started
     - name : start squid
       service: name=squid state=started
+    - name : start ntpd
+      service: name=ntpd state=started
