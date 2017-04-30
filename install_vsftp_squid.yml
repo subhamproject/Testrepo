@@ -12,11 +12,12 @@
     
   
   tasks:
-  - name: Ensure mysql/ntp and java are installed
+  - name: Ensure mysql/ntp and are installed
     action: yum name={{ item }} state=installed
     with_items:
       - mysql
       - ntp     
+      
   - name: Ensure ntp is running
     service: name=ntpd  enabled=yes
 
