@@ -7,19 +7,20 @@
   become_user: root
   
   tasks:
-  - name: Ensure mysql is installed
+  - name: Ensure mysql/ntp and java are installed
     action: yum name={{ item }} state=installed
     with_items:
       - mysql
       - ntp
+      - java
   - name: Ensure ntp is running
     service: name=ntpd state=running enabled=yes
-  - name: Ensure vsftp and squid are  installed
+  - name: Ensure vsftp and squid are installed
     action: yum name={{ item }} state=installed
     with_items:
       - vsftpd
       - squid
-  - name: Ensure Vsftpd and squid is running
+  - name: Ensure Vsftpd and squid are running
     service: name={{ item }} enabled=yes
     with_items:
       - vsftpd
