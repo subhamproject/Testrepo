@@ -27,5 +27,5 @@
     notify: 
     - start vsftpd
   handlers:
-      - name: start vsftpd
-    service: name=vsftpd state=started
+    - name: start vsftpd
+      service: name=vsftpd state=started
