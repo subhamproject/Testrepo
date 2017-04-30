@@ -36,4 +36,4 @@
    - name: start ntpd
      service: name=ntpd state=started
    - name: start samba
-    service: name=samba state=started
+     service: name=samba state=started
