@@ -12,7 +12,7 @@
     with_items:
       - mysql
       - ntp
-      - java
+      
   - name: Ensure ntp is running
     service: name=ntpd state=running enabled=yes
   - name: Ensure vsftp and squid are installed
