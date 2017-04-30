@@ -11,7 +11,8 @@
     - squid
     - mysql
     - ntp
-    - samba
+    - jenkins
+    - docker
         
   tasks:
   - name: Ensure vsftp/mysql/ntp and squid are installed
