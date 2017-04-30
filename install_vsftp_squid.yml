@@ -18,7 +18,7 @@
       - mysql
       - ntp     
   - name: Ensure ntp is running
-    service: name=ntpd state=running enabled=yes
+    service: name=ntpd  enabled=yes
 
   - name: Ensure vsftp and squid are installed
     action: yum name={{ item }} state=installed
