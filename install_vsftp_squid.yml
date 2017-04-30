@@ -1,0 +1,39 @@
+---
+- hosts: "{{ serv }}"
+  gather_facts: True
+  remote_user: "{{ user }}"
+  become: true
+  become_method: sudo
+  become_user: root 
+  vars:
+   pkg :
+    - vsftpd
+    - squid
+    
+  
+  tasks:
+  - name: Ensure mysql/ntp and java are installed
+    action: yum name={{ item }} state=installed
+    with_items:
+      - mysql
+      - ntp     
+  - name: Ensure ntp is running
+    service: name=ntpd state=running enabled=yes
+
+  - name: Ensure vsftp and squid are installed
+    action: yum name={{ item }} state=installed
+    with_items: "{{ pkg }}"
+
+  - name: Ensure Vsftpd and squid are running
+    service: name={{ item }} enabled=yes
+    with_items: "{{ pkg }}"
+
+    notify: 
+    - start vsftpd
+    - start squid
+
+  handlers:
+    - name: start vsftpd
+      service: name=vsftpd state=started
+    - name : start squid
+      service: name=squid state=started
