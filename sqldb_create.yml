@@ -26,12 +26,12 @@
       - squid
     notify: 
     - start {{ item }}
-      with_items:
-        - vsftpd
-        - squid
-  handlers:
-    - name: start {{ item }}
-      service: name={{ item }} state=started
-      with_items:
+    with_items:
        - vsftpd
        - squid
+  handlers:
+  - name: start {{ item }}
+    service: name={{ item }} state=started
+    with_items:
+      - vsftpd
+      - squid
