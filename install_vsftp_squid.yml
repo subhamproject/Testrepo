@@ -10,22 +10,22 @@
     - vsftpd
     - squid
         
-   tasks:
-   - name: Ensure vsftp/mysql/ntp and squid are installed
-     action: yum name={{ item }} state=installed
-     with_items: "{{ pkg }}"
+  tasks:
+  - name: Ensure vsftp/mysql/ntp and squid are installed
+    action: yum name={{ item }} state=installed
+    with_items: "{{ pkg }}"
 
-   - name: Ensure Vsftpd/mysql/ntp and squid are in chkconfig
-     service: name={{ item }} enabled=yes
-     with_items: "{{ pkg }}"
+  - name: Ensure Vsftpd/mysql/ntp and squid are in chkconfig
+    service: name={{ item }} enabled=yes
+    with_items: "{{ pkg }}"
 
-     notify: 
-     - start vsftpd
-     - start squid
+    notify: 
+    - start vsftpd
+    - start squid
    
 
-  handlers:
-    - name: start vsftpd
-      service: name=vsftpd state=started
-    - name : start squid
-      service: name=squid state=started
+ handlers:
+   - name: start vsftpd
+     service: name=vsftpd state=started
+   - name : start squid
+     service: name=squid state=started
