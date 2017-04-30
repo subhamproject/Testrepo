@@ -17,18 +17,18 @@
   - name: Ensure vsftp installed
     action: yum name={{ item }} state=installed
     with_items:
-       - vsftpd
-       - squid
+      - vsftpd
+      - squid
   - name: Ensure Vsftpd and squid is running
     service: name={{ item }} enabled=yes
     with_items:
-       - vsftpd
-       - squid
+      - vsftpd
+      - squid
     notify
     - start {{ item }}
       with_items:
-         - vsftpd
-         - squid
+        - vsftpd
+        - squid
   handlers:
     - name: start vsftpd and squid
       service: name={{ item }} state=started
