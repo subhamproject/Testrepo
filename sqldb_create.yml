@@ -30,7 +30,7 @@
        - vsftpd
        - squid
   handlers:
-   service: name={{ item }} state=started
+    service: name={{ item }} state=started
     with_items:
      - vsftpd
      - squid
