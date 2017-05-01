@@ -1,0 +1,9 @@
+---
+- hosts: "{{ serv }}"
+  remote_user: "{{ user }}"
+  sudo: yes 
+  
+  tasks:
+  - name: this is sudo test
+    action: file name=/tmp/sudotest.txt state=file owner=vagrant group=root
+   
