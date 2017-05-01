@@ -1,7 +1,10 @@
 ---
 - hosts: "{{ serv }}"
   remote_user: "{{ user }}"
-  sudo: yes 
+  gather_facts: True
+  become: true
+  become_method: sudo
+  become_user: root
   
   tasks:
   - name: this is sudo test
