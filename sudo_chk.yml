@@ -8,5 +8,5 @@
   
   tasks:
   - name: this is sudo test
-    action: file name=/tmp/sudotest.txt state=file owner=vagrant group=root
+    action: file name=/tmp/sudotest.txt state=touch owner=vagrant group=root
    
