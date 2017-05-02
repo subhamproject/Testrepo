@@ -4,6 +4,7 @@
   become: true
   become_method: sudo
   become_user: root
+  gather_facts: False
   
   tasks:
   - name: this is sudo test
