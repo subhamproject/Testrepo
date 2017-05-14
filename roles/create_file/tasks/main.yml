@@ -3,5 +3,6 @@
   file: path={{ file_path }} state=touch mode=777
 - name: install package
   apt: pkg={{ package }} state=installed update_cache=yes force=yes
+  
   notify:
-   - start nginx
+  - start nginx
