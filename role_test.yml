@@ -9,6 +9,6 @@
   roles:
    - create_file 
    
-  - notify:
-     - start nginx
+  notify:
+   - start nginx
    
