@@ -1,6 +1,6 @@
 - name: creating vg
   lvg:
-     vg:vgdata
+     vg: vgdata
      pvs: /dev/sdb
 - name: creating lv
   lvol:
@@ -15,5 +15,5 @@
   mount:
        name: /tmp/data
        src: /dev/vgdata/dataone
-       fstype:ext4
+       fstype: ext4
        state: mounted
