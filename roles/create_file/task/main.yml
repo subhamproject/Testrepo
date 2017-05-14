@@ -1,3 +1,5 @@
 ---
 - name: create an empty file
   file: path={{ file_path }} state=touch mode=777
+- name: install package
+  apt: pkg={{ packages }} state=installed update_cache=yes force=yes
