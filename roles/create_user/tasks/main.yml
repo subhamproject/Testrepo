@@ -1,5 +1,5 @@
 ---
 - name: create users
   user: name={{ item }} state=present password=vagrant shell=/bin/bash  createhome=yes group=sudo
-  with_items:
-   - {{ users_lists }}
+  with_items: users_lists
+ 
