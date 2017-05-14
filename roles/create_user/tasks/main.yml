@@ -1,4 +1,3 @@
 ---
 - name: create users
-  user: name={{ user_lists }} password=vagrant shell/bin/bash createhome=yes
-  
+  user: name={{ user_lists }} password=vagrant shell=/bin/bash createhome=yes
