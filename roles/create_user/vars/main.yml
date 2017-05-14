@@ -1,6 +1,0 @@
----
-user_lists:
- - htop
- - wget
- - squid
- - autofs
