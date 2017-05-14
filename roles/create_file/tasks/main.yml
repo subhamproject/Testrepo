@@ -4,7 +4,7 @@
 - name: install package
   apt: pkg={{ package }} state=installed update_cache=yes force=yes
 - name: copying template file
-  template: src=index.html dest=/etc/nginx owner=nginx group=nginx mode=777
+  template: src=index.html dest=/etc/nginx owner=vagrant group=vagrant mode=777
   notify: 
   - stop nginx
   - start nginx
