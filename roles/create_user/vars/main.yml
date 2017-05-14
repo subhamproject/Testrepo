@@ -3,4 +3,4 @@ user_lists:
  - htop
  - wget
  - squid
- - nfs
+ - autofs
