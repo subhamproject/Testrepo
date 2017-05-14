@@ -1,4 +1,4 @@
 ---
 - name: create users
-  apt: name={{ user_lists }} state=installed update_cache=yes force=yes
+  user: name={{ user_lists }} password=vagrant shell/bin/bash createhome=yes
   
