@@ -7,8 +7,4 @@
   become_method: sudo
 
   roles:
-   - create_file 
-   
-  notify:
-   - start nginx
-   
+   - create_file
