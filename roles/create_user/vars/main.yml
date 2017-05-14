@@ -1,4 +1,6 @@
 ---
 user_lists:
- - { name: 'jaggu' }
- - { name: 'manvi' }
+ - htop
+ - wget
+ - squid
+ - nfs
