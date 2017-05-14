@@ -1,0 +1,7 @@
+---
+file_path: /etc/baso.conf
+package: 
+ - wget
+ - htop
+ - vim
+ - mlocate
