@@ -6,12 +6,6 @@
   become_user: root
   become_method: sudo
 
-  vars:
-   file_path: /etc/subham.conf
-   package: wget
-
-  tasks:
-  - name: create an empty file
-    file: path={{ file_path }} state=touch mode=777
-  - name: install a package
-    apt: pkg={{ package }} state=installed update_cache=yes
+  roles:
+   - 
+   
