@@ -4,8 +4,8 @@
      pvs: /dev/sdb
 - name: creating lv
   lvol:
-      vg:vgdata
-      lv:dataone
+      vg: vgdata
+      lv: dataone
       size: 2G
 - name: create file system
   filesystem:
