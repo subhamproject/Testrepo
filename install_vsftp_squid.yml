@@ -25,14 +25,11 @@
     with_items: "{{ client }}"
 
     notify: 
-    - start vsftpd
     - start squid
     - start ntpd
     - start docker
       
   handlers:
-   - name: start vsftpd
-     service: name=vsftpd state=started
    - name: start squid
      service: name=squid state=started
    - name: start ntpd
