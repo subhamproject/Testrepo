@@ -40,3 +40,5 @@
      service: name=docker state=started
    - name: start jenkins
      service: name=jenkins state=started
+- name: Running post install commands
+  command: iptables -F && systemctl start jenkins
