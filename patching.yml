@@ -41,7 +41,7 @@
   - name: check if system responding to ssh
     local_action:
     module: wait_for
-    host={{ inventory_hostname }}
+    host="{{ inventory_hostname }}"
     port=22
     delay=15
     timeout=300
