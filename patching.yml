@@ -33,7 +33,3 @@
     when: reboot_required.stdout == "reboot_needed"
     register: reboot_started
     ignore_errors: true
-
-  - name: pause for 180 secs
-    pause:
-    minutes: 3
