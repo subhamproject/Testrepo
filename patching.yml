@@ -37,13 +37,3 @@
   - name: pause for 180 secs
     pause:
     minutes: 3
-
-  - name: check if system responding to ssh
-    local_action:
-    module: wait_for
-    host="{{ inventory_hostname }}"
-    port=22
-    delay=15
-    timeout=300
-    state=started
-    when: reboot_started|changed
