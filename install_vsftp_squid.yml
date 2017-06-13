@@ -26,7 +26,10 @@
     with_items: "{{ client }}"
     
   - name: Running post install commands
-    command: /sbin/iptables -F && /bin/systemctl start jenkins
+    command: {{ item }}
+    with_items:
+     - iptables -F 
+     - systemctl start jenkins
 
     notify: 
     - start squid
