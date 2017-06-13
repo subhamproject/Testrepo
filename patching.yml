@@ -1,5 +1,4 @@
 ---
-
 - hosts: "{{ serv }}"
   remote_user: "{{ Remote_user }}"
   become: true
