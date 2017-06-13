@@ -7,9 +7,9 @@
  
   tasks:
   - name: verify if nginx is running
-    shell: if ps -eaf|egrep 'nginx'|egrep -v egrep > /dev/null ;then echo 'process_running' ;else echo 'process_not_running';fi  
+    shell: if ps -eaf|egrep nginx|egrep -v egrep > /dev/null ;then echo 'process_running' ;else echo 'process_not_running';fi  
     ignore_errors: true
-    register_error: app_check
+    register: app_check
    
   - name: decison point to start patching
     fail: msg="{{ inventory_hostname }} have running application,plese stop the application first then attempt patching."
