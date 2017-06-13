@@ -27,10 +27,10 @@
    
 
    – name: restart system
-     command: shutdown -r +1 “Rebooting System After Patching”
+     command: shutdown -r +1 "Rebooting System After Patching"
      async: 0
      poll: 0
-     when: reboot_required.stdout == “reboot_needed”
+     when: reboot_required.stdout == "reboot_needed"
      register: reboot_started
      ignore_errors: true
 
