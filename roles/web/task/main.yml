@@ -1,0 +1,8 @@
+---
+- name: install nginx package
+  yum: name=nginx state=latest
+  
+- name: start nginx
+  service: name=nginx state=started
+  notify:
+   - start nginx
