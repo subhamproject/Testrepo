@@ -1,11 +1,10 @@
 ---
 - hosts: "{{ serv }}"
-  remote_user: "{{ user }}"
+  remote_user: "{{ Remote_user }}"
   gather_facts: True
   become: yes
   become_user: root
   become_method: sudo
 
   roles:
-   - create_file
-   - create_lvm
+   - web
