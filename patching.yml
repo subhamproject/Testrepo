@@ -7,7 +7,7 @@
  
   tasks:
   - name: verify if nginx is running
-    shell: if ps -eaf|egrep nginx|egrep -v egrep > /dev/null ;then echo 'process_running' ;else echo 'process_not_running';fi  
+    shell: if ps -eaf|egrep nginx|grep -v grep > /dev/null ;then echo 'process_running' ;else echo 'process_not_running';fi  
     ignore_errors: true
     register: app_check
    
