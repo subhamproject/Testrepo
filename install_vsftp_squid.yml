@@ -11,6 +11,7 @@
     - squid
     - mysql
     - ntp
+    - java
    client:
     - jenkins
     - docker
@@ -36,4 +37,3 @@
      service: name=ntpd state=started
    - name: start docker
      service: name=docker state=started
-     
