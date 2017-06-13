@@ -29,6 +29,7 @@
     - start squid
     - start ntpd
     - start docker
+    - start jenkins
       
   handlers:
    - name: start squid
@@ -37,3 +38,5 @@
      service: name=ntpd state=started
    - name: start docker
      service: name=docker state=started
+   - name: start jenkins
+     service: name=jenkins state=started
