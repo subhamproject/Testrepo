@@ -26,7 +26,7 @@
     register: reboot_required
    
 
-  – name: restart system
+  - name: restart system
     command: shutdown -r +1 "Rebooting System After Patching"
     async: 0
     poll: 0
@@ -34,11 +34,11 @@
     register: reboot_started
     ignore_errors: true
 
-  – name: pause for 180 secs
+  - name: pause for 180 secs
     pause:
     minutes: 3
 
-  – name: check if system responding to ssh
+  - name: check if system responding to ssh
     local_action:
     module: wait_for
     host={{ inventory_hostname }}
