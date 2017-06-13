@@ -1,5 +1,4 @@
 ---
-- name: "#########Running MAIN playbook ########################"
 - hosts: "{{ serv }}"
   gather_facts: True
   remote_user: "{{ user }}"
