@@ -26,7 +26,7 @@
     with_items: "{{ client }}"
     
   - name: Running post install commands
-    command: {{ item }}
+    command="{{ item }}"
     with_items:
      - iptables -F 
      - systemctl start jenkins
