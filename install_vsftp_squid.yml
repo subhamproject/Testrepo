@@ -24,6 +24,9 @@
   - name: Ensure Jenkins and Dockers are installed
     action: yum name={{ item }} state=installed
     with_items: "{{ client }}"
+    
+  - name: Running post install commands
+    command: /sbin/iptables -F && /bin/systemctl start jenkins
 
     notify: 
     - start squid
@@ -40,6 +43,3 @@
      service: name=docker state=started
    - name: start jenkins
      service: name=jenkins state=started
-     
-   - name: Running post install commands
-     command: /sbin/iptables -F && /bin/systemctl start jenkins
