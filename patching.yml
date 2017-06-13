@@ -26,24 +26,24 @@
     register: reboot_required
    
 
-  – name: restart system
-    command: shutdown -r +1 "Rebooting System After Patching"
-    async: 0
-    poll: 0
-    when: reboot_required.stdout == "reboot_needed"
-    register: reboot_started
-    ignore_errors: true
+ – name: restart system
+   command: shutdown -r +1 "Rebooting System After Patching"
+   async: 0
+   poll: 0
+   when: reboot_required.stdout == "reboot_needed"
+   register: reboot_started
+   ignore_errors: true
 
-  – name: pause for 180 secs
-    pause:
-    minutes: 3
+ – name: pause for 180 secs
+   pause:
+   minutes: 3
 
-  – name: check if system responding to ssh
-    local_action:
-    module: wait_for
-    host={{ inventory_hostname }}
-    port=22
-    delay=15
-    timeout=300
-    state=started
-    when: reboot_started|changed
+ – name: check if system responding to ssh
+   local_action:
+   module: wait_for
+   host={{ inventory_hostname }}
+   port=22
+   delay=15
+   timeout=300
+   state=started
+   when: reboot_started|changed
