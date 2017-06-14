@@ -1,5 +1,6 @@
 ---
-- hosts: "{{ serv }}"
+- name: This is main play running
+  hosts: "{{ serv }}"
   remote_user: "{{ Remote_user }}"
   become: true
   become_method: sudo
