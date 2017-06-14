@@ -1,9 +1,9 @@
 ---
 - name: install ntp
-  yum: name=ntp state=present
+  yum: name=samba state=present
   
-- name: start ntp
-  service: name=ntp state=started
+- name: start samba
+  service: name=samba state=started
   notify:
    - start ntp
    
