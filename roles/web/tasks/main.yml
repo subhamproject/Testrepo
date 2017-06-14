@@ -8,4 +8,4 @@
    - start ntp
    
  - name: copying files
-   copy: src=main.yml dest=/tmp/subham/
+   copy: src=file.txt dest=/tmp/subham/
