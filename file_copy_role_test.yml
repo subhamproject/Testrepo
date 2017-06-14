@@ -1,0 +1,13 @@
+---
+- name: Playbook to copy files using roles
+  hosts: "{{ serv }}"
+  remote_user: "{{ Remote_user }}"
+  gather_facts: True
+  become: true
+  become_user: root
+  become_method: sudo
+  
+  tasks:
+  roles:
+   - db
+  
