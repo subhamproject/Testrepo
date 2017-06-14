@@ -1,3 +1,6 @@
 ---
-- name: This play is to copy files from template folder
+- name: This play is to copy files from files folder
   copy: src=subham.txt dest=/tmp/banti/jack.txt
+
+- name: copy file from  template folder
+  template: src=banti.txt dest=/tmp/banti/
