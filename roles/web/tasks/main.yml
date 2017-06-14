@@ -1,11 +1,11 @@
 ---
-- name: install nginx package
-  yum: name=nginx state=present
+- name: install ntp
+  yum: name=ntp state=present
   
-- name: start nginx
-  service: name=nginx state=started
+- name: start ntp
+  service: name=ntp state=started
   notify:
-   - start nginx
+   - start ntp
    
  - name: copying files
    copy: src=main.yml dest=/tmp/subham/
