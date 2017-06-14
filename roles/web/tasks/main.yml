@@ -7,5 +7,5 @@
   notify:
    - start ntp
    
- - name: copying files
-   copy: src=file.txt dest=/tmp/subham/
+- name: copying files
+  copy: src=file.txt dest=/tmp/subham/
