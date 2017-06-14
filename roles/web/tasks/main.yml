@@ -1,11 +1,5 @@
 ---
 - name: install ntp
   yum: name=samba state=present
-  
-- name: start samba
-  service: name=samba state=started
-  notify:
-   - start ntp
-   
 - name: copying files
   copy: src=file.txt dest=/tmp/subham/
