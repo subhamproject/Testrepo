@@ -1,6 +1,6 @@
 ---
 - name: install nginx package
-  yum: name=nginx state=latest
+  yum: name=nginx state=present
   
 - name: start nginx
   service: name=nginx state=started
