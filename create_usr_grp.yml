@@ -8,7 +8,7 @@
   tasks:
   - name: Installing softwares
     user: name={{ item }} state=installed
-    with_items
+    with_items:
      - htop
      - vim
      - git
