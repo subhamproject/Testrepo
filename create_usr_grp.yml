@@ -4,10 +4,11 @@
   become: true
   become_method: sudo
   become_user: root
+  any_errors_fatal: false
   
   tasks:
   - name: Installing softwares
-    yum: name={{ item }} ignore_errors=true state=installed 
+    yum: name={{ item }} state=installed 
     with_items:
      - htop
      - vim
