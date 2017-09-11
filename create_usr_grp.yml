@@ -6,7 +6,7 @@
   become_user: root
   become_method: sudo
  
-tasks:
+  tasks:
   - name: Create group
     group:
     name: {{ item }}
