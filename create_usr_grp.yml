@@ -12,7 +12,7 @@
     group:
     name: {{ item.name }}
     state: present
-    -  with_items:
+    with_items:
         - galaxy
         - remote
        
@@ -21,6 +21,6 @@
     name: {{ item.name }}
     groups: galaxy
     state: present 
-     - with_items:
+    with_items:
         - ram
         - rahim
