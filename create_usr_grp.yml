@@ -7,7 +7,12 @@
   become_user: root
   
   tasks:
-  - name: Create Group
-    group:
-    name: galaxy
-    state: present
+  - name: Installing Softwares
+    yum:
+    name: {{ item }}
+    state: installed
+    with_items:
+     - git
+     - vim
+     - htop
+     - nmap
