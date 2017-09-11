@@ -10,17 +10,6 @@
   tasks:
   - name: Create group
     group:
-    name: {{ item.group }}
+    name: galaxy
     state: present
-    with_items:
-       - "{ group: 'galaxy'}"
-       - "{ group: 'remote' }"
-       
-  - name: Create user
-    user:
-    name: {{ item.name }}
-    group: galaxy
-    state: present 
-    with_items:
-       - "{ name: 'ram' }"
-       - "{ name: 'rahim' }"
+      
