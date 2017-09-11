@@ -6,10 +6,3 @@
   become: True
   become_method: sudo
   become_user: root
- 
-tasks:
-  - name: Create group
-    group:
-    name: galaxy
-    state: present
-      
