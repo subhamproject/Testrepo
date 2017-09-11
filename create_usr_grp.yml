@@ -1,0 +1,25 @@
+---
+- name: This playbook is to create group and user in desired server
+  hosts: "{{ serv }}"
+  remote_user: "{{ user }}"
+  gather_facts: true
+  become_user: root
+  become_method: sudo
+ 
+tasks:
+  - name: Create group
+    group:
+    name: {{ item }}
+    state: present
+    -  with_items:
+        - galaxy
+        - remote
+       
+  - name: Create user
+    user:
+    name= {{ item }}
+    groups: galaxy
+    state: present 
+     - with_items:
+        - ram
+        - rahim
