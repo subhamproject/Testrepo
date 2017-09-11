@@ -13,8 +13,8 @@
     name: {{ item.name }}
     state: present
     with_items:
-        - { name: 'galaxy'}
-        - { name: 'remote' }
+       - { name: 'galaxy'}
+       - { name: 'remote' }
        
   - name: Create user
     user:
@@ -22,5 +22,5 @@
     groups: galaxy
     state: present 
     with_items:
-        - { name: 'ram' }
-        - { name: 'rahim' }
+       - { name: 'ram' }
+       - { name: 'rahim' }
