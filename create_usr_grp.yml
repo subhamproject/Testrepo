@@ -7,7 +7,8 @@
   
   tasks:
   - name: Installing softwares
-    yum: name={{ item }} state=installed ignore_errors: true
+    yum: name={{ item }} state=installed 
+    ignore_errors: true
     with_items:
      - htop
      - vim
