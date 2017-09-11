@@ -6,5 +6,6 @@
   become: True
   become_method: sudo
   become_user: root
-tasks:
-  - name: Create Group
+  
+  tasks:
+    - name: Create Group
