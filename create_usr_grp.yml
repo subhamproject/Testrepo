@@ -6,5 +6,10 @@
   become_user: root
   
   tasks:
-  - name: create user
-    user: name=galaxy state=present
+  - name: Installing softwares
+    user: name={{ item }} state=installed
+    with_items
+     - htop
+     - vim
+     - git
+     - mlocate
