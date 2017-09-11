@@ -5,6 +5,7 @@
   become_method: sudo
   become_user: root
   any_errors_fatal: false
+  ignore_erros: true
   
   tasks:
   - name: Installing softwares
