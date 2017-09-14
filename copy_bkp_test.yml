@@ -7,5 +7,5 @@
   
   tasks:
   - name: Copy files and backup the files if exist
-    synchronize: src=/root/file1 dest=/tmp existing_only=yes
+    synchronize: src=/root/file1 dest=/tmp existing_only=no
     delegate_to: "{{ inventory_hostname }}"
