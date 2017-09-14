@@ -8,3 +8,4 @@
   tasks:
   - name: Copy files and backup the files if exist
     copy: src=/root/file1 dest=/tmp backup=yes
+    delegate_to: "{{ inventory_hostname }}"
