@@ -16,3 +16,5 @@
       - { name:  'subh', groups: 'root' }
       - { name:  'ansible', groups: 'vagrant' }
       - { name : 'world', groups: 'vagrant' }
+      - { name : 'ram', groups: 'vagrant' }
+      - { name : 'rahim, groups: 'vagrant' }
