@@ -18,3 +18,4 @@
       - { name : 'world', groups: 'vagrant' }
       - { name : 'ram', groups: 'vagrant' }
       - { name : 'rahim', groups: 'vagrant' }
+      - { name : 'Hari', groups: 'vagrant' }
