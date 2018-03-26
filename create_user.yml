@@ -21,4 +21,4 @@
       - { name : 'Hari', groups: 'vagrant' }
       - { name : 'rahul', groups: 'root' }
       - { name : 'rashmi', groups: 'root' }
-      - { name : 'ramesh', groups: 'root' }
+      - { name : 'ramesh', groups: 'root' }'
