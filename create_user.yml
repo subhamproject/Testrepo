@@ -19,4 +19,4 @@
       - { name : 'ram', groups: 'vagrant' }
       - { name : 'rahim', groups: 'vagrant' }
       - { name : 'Hari', groups: 'vagrant' }
-      - { name : 'rahul', gropus: 'root' }
+      - { name : 'rahul', groups: 'root' }
