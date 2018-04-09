@@ -10,15 +10,15 @@
   - name: Adding users
     user: name={{ item.name }} update_password=always password=vagrant state=present groups={{ item.groups }} 
     with_items: 
-      - { name: 'testuser1', groups: 'vagrant' }
+      - { name: 'testuser1', groups: 'root' }
       - { name: 'testuser2', groups: 'root' }
-      - { name: 'baso', groups: 'vagrant' }
+      - { name: 'baso', groups: 'root' }
       - { name:  'subh', groups: 'root' }
-      - { name:  'ansible', groups: 'vagrant' }
-      - { name : 'world', groups: 'vagrant' }
-      - { name : 'ram', groups: 'vagrant' }
-      - { name : 'rahim', groups: 'vagrant' }
-      - { name : 'Hari', groups: 'vagrant' }
+      - { name:  'ansible', groups: 'root' }
+      - { name : 'world', groups: 'root' }
+      - { name : 'ram', groups: 'root' }
+      - { name : 'rahim', groups: 'root' }
+      - { name : 'Hari', groups: 'root' }
       - { name : 'rahul', groups: 'root' }
       - { name : 'rashmi', groups: 'root' }
       - { name : 'ramesh', groups: 'root' }
