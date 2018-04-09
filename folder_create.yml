@@ -8,7 +8,7 @@
   
   tasks:
   - name: Creating folder structure
-    file: state=directory mode=775 owner=vagrant group=vagrant recurse=yes dest=/tmp/{{ item.dest }}
+    file: state=directory mode=775 owner=root group=root recurse=yes dest=/tmp/{{ item.dest }}
     with_items:
         - { dest: 'dest1' }
         - { dest: 'dest2' }
