@@ -10,7 +10,7 @@ pipeline {
       steps {
         script {
           sh '''
-          ssh -l pentaho 52.66.77.108
+          ssh -l ec2-user 52.66.77.108
           '''
         }
       }
