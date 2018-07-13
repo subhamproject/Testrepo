@@ -1,0 +1,176 @@
+---
+- hosts: "{{ serv }}"
+  gather_facts: True
+  remote_user: "{{ user }}"
+  become: true
+  become_method: sudo
+  become_user: root
+
+#****** Declare Variables Below ********
+
+  vars:
+    DNS_Search: "search sandisk.com wdc.com hgst.com ad.shared sdcorp.global.sandisk.com sc.wdc.com sanjose.hgst.com"
+    Primary_DNS: "10.86.1.1"
+    Secondary_DNS: "10.86.2.1"
+    NTP1: "10.86.1.1"
+    NTP2: "10.86.2.1"
+    MailRelay: "mailrelay.subham.com"
+    Alert_Email: "subham-unix@jenkins.com"
+
+#******* Variables ENDs Here *********
+
+###### TASKS Starts - DONT Edit Below ###
+
+  tasks:
+  - name: Check OS
+    fail: msg="Operating system is not RedHat"
+    when: ansible_os_family != "RedHat"
+
+##### Disable Firewall #########
+  - name: Disable SElinux
+    lineinfile:
+          dest: '/etc/selinux/config'
+          regexp: 'SELINUX='
+          line: 'SELINUX=disabled'
+          backup: 'true'
+
+  - name: Disable IPtables Service on RHEL6
+    service: name=iptables enabled=no
+    when: ansible_distribution_major_version == "6"
+
+  - name: Disable Firewall Services on RHEL7
+    service: name={{item}} enabled=no
+    with_items:
+        - iptables
+        - firewalld
+    when: ansible_distribution_major_version == "7"
+    ignore_errors: yes
+
+##### Network Configuration ####
+#/etc/sysconfig/network-scripts/ifcfg-em3
+#/etc/sysconfig/network
+
+# Update Hostname
+
+  - name: Set Hostname in conf file for RHEL 7
+    shell: echo "{{inventory_hostname_short}}" > /etc/hostname
+    when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7")
+
+  - name: Set Hostname in conf file for RHEL 6
+    lineinfile:
+      dest: /etc/sysconfig/network
+      regexp: ^HOSTNAME
+      line: HOSTNAME={{inventory_hostname_short}}
+      state: present
+      backup: yes
+    when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "6")
+
+# Update /etc/hosts File
+
+  - name: Check if Hostname is updated in /etc/hosts
+    shell: grep -i {{inventory_hostname_short}} /etc/hosts
+    register: output_etchosts
+    ignore_errors: yes
+
+  - name: Update Etc Hosts File
+    shell: |
+      cp -p /etc/hosts /etc/hosts_`date +%F_%H%M%S`
+      echo -e "#Updated by Ansible\n{{ansible_default_ipv4.address}}      {{inventory_hostname}}  {{inventory_hostname_short}}" >> /etc/hosts
+    when: output_etchosts.rc == 1
+
+# Update Resolv Conf ##
+
+  - name: Update Resolv Conf File
+    shell: |
+      cp -p /etc/resolv.conf /etc/resolv.conf_`date +%F_%H%M%S`
+      echo -e "#Updated by Ansible\n{{DNS_Search}}\nnameserver {{Primary_DNS}}\nnameserver {{Secondary_DNS}}" > /etc/resolv.conf
+
+# Disable NetworkManager Service
+
+  - name: Disable NetworkManager Service
+    service: name=NetworkManager state=stopped enabled=no
+    ignore_errors: yes
+
+##### Remove Default Repo Files ###
+  - name: Remove Default Repo Files
+    shell: |
+      cd /etc/yum.repos.d
+      mkdir OLD-Repo
+      mv *.repo OLD-Repo/
+    ignore_errors: yes
+
+##### Create Repo File to install Package from our server  ####
+
+  - name: Create Repo File
+    shell: |
+      echo -e "#Updated by Ansible\n[DVDISO]\nname=DVD-ISO\nbaseurl=http://millrsid01.sandisk.com/pxehome/rhel{{ansible_distribution_version}}-x86-64/\nenabled=1\ngpgcheck=0" > /etc/yum.repos.d/PostcheckAnsible.repo
+      yum clean all
+
+##### Install Required Additional RPM Packages ####
+  - name: Install Required RPMs
+    yum:  name={{item}} state=present
+    with_items:
+        - net-tools
+        - sysstat
+        - ntp
+        - sendmail
+        - mailx
+        - telnet
+        - lsof
+        - psmisc
+        - bind-utils
+        - pciutils
+        - udev
+        - mlocate
+        - iotop
+        - tcpdump
+        - sysfsutils
+        - lsscsi
+#     - vasclnt
+#     - vasgp
+
+####### Configure Sendmail Mailrelay #####
+  - name: Configure Sendmail Mailrelay
+    lineinfile:
+      dest=/etc/mail/sendmail.cf
+      regexp='^DS'
+      line="DS{{MailRelay}}"
+      backup=yes
+
+  - name: Restart and Enable Chkconfig Sendmail Service
+    service: name=sendmail state=restarted enabled=yes
+
+######## Configure NTP #######
+  - name: Remove Redhat NTP server defaults
+    lineinfile:
+      dest: /etc/ntp.conf
+      regexp: '^server'
+      state: absent
+      backup: yes
+
+  - name: update our NTP servers
+    lineinfile:
+      dest: /etc/ntp.conf
+      line: "{{ item }}"
+    with_items:
+      - 'server {{NTP1}}'
+      - 'server {{NTP2}}'
+
+  - name: Restart and Enable Chkconfig NTP Service
+    service: name=ntpd state=restarted enabled=yes
+
+  - name: Disable Chrony Service on RHEL7
+    service: name=chronyd state=stopped enabled=no
+    when: ansible_distribution_major_version == "7"
+    ignore_errors: yes
+
+####### Generate ASCII art for hostname rpm -qf /usr/bin/figlet -- figlet-2.2.5-9.el6.x86_64 #####
+  - name: Generate ASCII art for hostname in milsndid02
+    local_action: shell figlet {{inventory_hostname_short}} > /tmp/Ansible-MOTD-Out-{{inventory_hostname_short}}
+
+  - name: Copy MOTD Output to remote server /etc/motd
+    copy: src=/tmp/Ansible-MOTD-Out-{{inventory_hostname_short}} dest=/etc/motd
+
+####### Configure ROOT CRON to Alert for REBOOT ####
+  - name: Configure ROOT CRON to Alert for REBOOT
+    shell: echo '@reboot echo "`hostname` rebooted on `date`" | mail -s "`hostname` rebooted on `date`" {{Alert_Email}}' > /var/spool/cron/root
