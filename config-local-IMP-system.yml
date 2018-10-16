@@ -64,6 +64,7 @@
     when: pip_is_installed.rc != 0
   - name: "Installing  awscli using pip"
     pip: name=awscli
+    when: "ansible_distribution == 'Ubuntu'"
   - name: "Creating ~/.aws directory"
     file: path="~/.aws" state=directory
   - name: "Check docker storage group"
