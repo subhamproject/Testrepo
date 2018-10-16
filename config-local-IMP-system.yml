@@ -1,0 +1,104 @@
+---
+- hosts: localhost
+  become: true
+  vars:
+     aws_key: "XXXXXXXXXXXX"
+     aws_secret: "XXXXXXXXXXXXXXXXXXXXX"
+     aws_region: "XXXXXXXXXXXXXXXXXXXXXXXX"
+     aws_profile: "docker-registry"
+  tasks:
+  - name: "Adding APT keys for Docker"
+    apt_key: url="{{ item }}" state=present
+    with_items:
+     - 'https://download.docker.com/linux/ubuntu/gpg'
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Adding APT keys for Mongodb"
+    apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=0C49F3730359A14518585931BC711F9BA15703C6
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Adding Repositories"
+    apt_repository: repo="{{ item }}" state=present
+    with_items:
+     - 'deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse'
+     - 'deb https://download.docker.com/linux/ubuntu xenial stable'
+     - 'ppa:deadsnakes/ppa'
+     - 'ppa:openjdk-r/ppa'
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Installing packages"
+    apt: pkg="{{ item }}" update_cache=yes state=present
+    with_items:
+     - docker-ce
+     - wget
+     - curl
+     - git
+     - mongodb-org-shell
+     - mongodb-org-tools
+     - python3.6
+     - openjdk-8-jdk
+    when: "ansible_distribution == 'Ubuntu'"
+
+    notify:
+     - start docker
+  - name: "Adding rcxdev user to docker group"
+    user:
+       name=rcxdev
+       groups=docker
+       append=yes
+       shell=/bin/bash
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Installing docker compose"
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.22.0/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}
+      dest: /usr/bin/docker-compose
+      force: True
+      mode: 0755
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Check if pip is already installed"
+    command: "pip --version"
+    ignore_errors: true
+    no_log: true
+    register: pip_is_installed
+  - name: "Download get-pip.py"
+    get_url: url=https://bootstrap.pypa.io/get-pip.py  dest=/tmp
+  - name: "Installing pip"
+    command: "python /tmp/get-pip.py"
+    when: pip_is_installed.rc != 0
+  - name: "Installing  awscli using pip"
+    pip: name=awscli
+  - name: "Creating ~/.aws directory"
+    file: path="~/.aws" state=directory
+  - name: "Check docker storage group"
+    command: "docker info|grep -qw overlay2"
+    ignore_errors: true
+    no_log: true
+    register: docker_driver
+  - name: "Change docker driver"
+    shell:
+     cmd: |
+       cat > /etc/docker/daemon.json <<DOCKER
+       {
+         "storage-driver": "overlay2"
+       }
+       DOCKER
+    when: docker_driver.rc == 0
+    notify:
+       - restart docker
+  - name: "Check AWS profile is configured"
+    command: "grep -q {{ aws_profile }} ~/.aws/config"
+    ignore_errors: true
+    no_log: true
+    register: aws_profile_check
+  - name: "Configure aws profile"
+    shell:
+     cmd: |
+      cat >> ~/.aws/config <<AWS_CONFIG
+      [profile {{ aws_profile }}]
+      aws_access_key_id={{ aws_key }}
+      aws_secret_access_key={{ aws_secret }}
+      region={{ aws_region }}
+      AWS_CONFIG
+    when: aws_profile_check.rc != 0
+  handlers:
+    - name: start docker
+      service: name=docker state=started
+    - name: restart docker
+      service: name=docker state=restarted
