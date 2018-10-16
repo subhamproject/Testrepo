@@ -2,9 +2,9 @@
 - hosts: localhost
   become: true
   vars:
-     aws_key: "XXXXXXXXXXXX"
-     aws_secret: "XXXXXXXXXXXXXXXXXXXXX"
-     aws_region: "XXXXXXXXXXXXXXXXXXXXXXXX"
+     aws_key: "XXXXXXXXX"
+     aws_secret: "XXXXXXXXXX"
+     aws_region: "XXXXXXXXXX"
      aws_profile: "docker-registry"
   tasks:
   - name: "Adding APT keys for Docker"
@@ -68,7 +68,7 @@
   - name: "Creating ~/.aws directory"
     file: path="~/.aws" state=directory
   - name: "Check docker storage group"
-    command: "docker info|grep -qw overlay2"
+    command: "docker info|grep -q overlay2"
     ignore_errors: true
     no_log: true
     register: docker_driver
@@ -80,7 +80,7 @@
          "storage-driver": "overlay2"
        }
        DOCKER
-    when: docker_driver.rc == 0
+    when: docker_driver.rc != 0
     notify:
        - restart docker
   - name: "Check AWS profile is configured"
