@@ -2,11 +2,16 @@
 - hosts: localhost
   become: true
   vars:
-     aws_key: "XXXXXXXXX"
-     aws_secret: "XXXXXXXXXX"
-     aws_region: "XXXXXXXXXX"
+     aws_key: "AKIAJM26HGEOCVA6A3BA"
+     aws_secret: "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"
+     aws_region: "ap-southeast-1"
      aws_profile: "docker-registry"
   tasks:
+  - name: "config change in ansible.cfg"
+    lineinfile:
+     dest: /etc/ansible/ansible.cfg
+     line: 'deprecation_warnings = False'
+     insertafter: '\[defaults\]'
   - name: "Adding APT keys for Docker"
     apt_key: url="{{ item }}" state=present
     with_items:
@@ -77,7 +82,7 @@
      cmd: |
        cat > /etc/docker/daemon.json <<DOCKER
        {
-         "storage-driver": "overlay2"
+         "storage-driver": "overlay"
        }
        DOCKER
     when: docker_driver.rc != 0
