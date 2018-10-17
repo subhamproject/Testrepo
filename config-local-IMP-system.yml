@@ -4,7 +4,7 @@
   vars:
      aws_key: "XXXXXX"
      aws_secret: "XXXXXX"
-     aws_region: "XXXXX"
+     aws_region: "XXXXXXX"
      aws_profile: "docker-registry"
   tasks:
   - name: "config change in ansible.cfg"
@@ -58,14 +58,14 @@
       mode: 0755
     when: "ansible_distribution == 'Ubuntu'"
   - name: "Check if pip is already installed"
-    command: "pip --version"
+    shell: "pip --version"
     ignore_errors: true
     no_log: true
     register: pip_is_installed
   - name: "Download get-pip.py"
     get_url: url=https://bootstrap.pypa.io/get-pip.py  dest=/tmp
   - name: "Installing pip"
-    command: "python /tmp/get-pip.py"
+    shell: "python /tmp/get-pip.py"
     when: pip_is_installed.rc != 0
   - name: "Installing  awscli using pip"
     pip: name=awscli
@@ -73,7 +73,7 @@
   - name: "Creating ~/.aws directory"
     file: path="~/.aws" state=directory
   - name: "Check docker storage group"
-    command: "docker info|grep -q overlay2"
+    shell: "docker info|grep -q overlay2"
     ignore_errors: true
     no_log: true
     register: docker_driver
@@ -82,14 +82,14 @@
      cmd: |
        cat > /etc/docker/daemon.json <<DOCKER
        {
-         "storage-driver": "overlay"
+         "storage-driver": "overlay2"
        }
        DOCKER
     when: docker_driver.rc != 0
     notify:
        - restart docker
   - name: "Check AWS profile is configured"
-    command: "grep -q {{ aws_profile }} ~/.aws/config"
+    shell: "grep -q {{ aws_profile }} ~/.aws/config"
     ignore_errors: true
     no_log: true
     register: aws_profile_check
@@ -103,6 +103,16 @@
       region={{ aws_region }}
       AWS_CONFIG
     when: aws_profile_check.rc != 0
+  - name: "Adding custom scripts"
+    shell:
+     cmd: |
+       FILES=~/.prv/pfiles
+       [ -d ~/.ssh ] || mkdir -p -m 600 ~/.ssh
+       cp -r $FILES/ssh/. ~/.ssh/.
+       cp -r $FILES/home/. ~/.
+       grep custom-entry ~/.bashrc 2>&1 >/dev/null ||
+       echo ". $FILES/custom-entry.sh" >> ~/.bashrc
+    when: "ansible_distribution == 'Ubuntu'"
   handlers:
     - name: start docker
       service: name=docker state=started
