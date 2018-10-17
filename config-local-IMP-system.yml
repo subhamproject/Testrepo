@@ -2,9 +2,9 @@
 - hosts: localhost
   become: true
   vars:
-     aws_key: "AKIAJM26HGEOCVA6A3BA"
-     aws_secret: "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"
-     aws_region: "ap-southeast-1"
+     aws_key: "XXXXXX"
+     aws_secret: "XXXXXX"
+     aws_region: "XXXXX"
      aws_profile: "docker-registry"
   tasks:
   - name: "config change in ansible.cfg"
