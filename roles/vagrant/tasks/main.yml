@@ -1,0 +1,116 @@
+---
+# tasks file for vagrant
+  - name: "config change in ansible.cfg"
+    lineinfile:
+     dest: /etc/ansible/ansible.cfg
+     line: 'deprecation_warnings = False'
+     insertafter: '\[defaults\]'
+  - name: "Adding APT keys for Docker"
+    apt_key: url="{{ item }}" state=present
+    with_items:
+     - 'https://download.docker.com/linux/ubuntu/gpg'
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Adding APT keys for Mongodb"
+    apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=0C49F3730359A14518585931BC711F9BA15703C6
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Adding Repositories"
+    apt_repository: repo="{{ item }}" state=present
+    with_items:
+     - 'deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse'
+     - 'deb https://download.docker.com/linux/ubuntu xenial stable'
+     - 'ppa:deadsnakes/ppa'
+     - 'ppa:openjdk-r/ppa'
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Installing packages"
+    apt: pkg="{{ item }}" update_cache=yes state=present
+    with_items:
+     - docker-ce
+     - wget
+     - curl
+     - git
+     - tmux
+     - mongodb-org-shell
+     - mongodb-org-tools
+     - python3.6
+     - openjdk-8-jdk
+    when: "ansible_distribution == 'Ubuntu'"
+
+    notify:
+     - start docker
+  - name: "Adding rcxdev user to docker group"
+    user:
+       name=rcxdev
+       groups=docker
+       append=yes
+       shell=/bin/bash
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Installing docker compose"
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.22.0/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}
+      dest: /usr/bin/docker-compose
+      force: True
+      mode: 0755
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Check if pip is already installed"
+    shell: "pip --version"
+    ignore_errors: true
+    no_log: true
+    register: pip_is_installed
+  - name: "Download get-pip.py"
+    get_url: url=https://bootstrap.pypa.io/get-pip.py  dest=/tmp
+  - name: "Installing pip"
+    shell: "python /tmp/get-pip.py"
+    when: pip_is_installed.rc != 0
+  - name: "Installing  awscli using pip"
+    pip: name=awscli
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Check docker storage group"
+    shell: "docker info|grep -q overlay2"
+    ignore_errors: true
+    no_log: true
+    register: docker_driver
+  - name: "Change docker driver"
+    shell:
+     cmd: |
+       cat > /etc/docker/daemon.json <<DOCKER
+       {
+         "storage-driver": "overlay2"
+       }
+       DOCKER
+    when: docker_driver.rc != 0
+    notify:
+       - restart docker
+  - name: "Creating neccessary folders"
+    file: path={{ item }} state=directory
+    with_items:
+     - "~/.prv/pfiles"
+     - "~/.aws"
+     - "~/.ssh"
+  - name: "Copy custom entry file"
+    copy: src=files/custom-entry.sh dest=~/.prv/pfiles
+  - name: "Copy home files"
+    copy:
+      src: "{{ item}}"
+      dest: ~/.
+    with_fileglob:
+     - ../files/home/.*
+  - name: "copy ssh files"
+    copy:
+     src: "{{ item }}"
+     dest: ~/.ssh/.
+     mode: 0600
+    with_fileglob:
+     - ../files/ssh/.*
+  - name: "Copying aws config file"
+    copy:
+     src: "{{ item }}"
+     dest: ~/.aws/.
+    with_fileglob:
+     - ../files/home/.aws/*
+  - name: "Add our custom-entry file to the loading sequence"
+    shell:
+     cmd: |
+       FILES=~/.prv/pfiles
+       grep custom-entry ~/.bashrc 2>&1 >/dev/null || 
+       echo ". $FILES/custom-entry.sh" >> ~/.bashrc
+    when: "ansible_distribution == 'Ubuntu'"

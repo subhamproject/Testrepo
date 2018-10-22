@@ -1,0 +1,7 @@
+alias log='comp logs -f --no-color --tail=50 $*'
+alias devops='cd ~/rcx-devops'
+alias code='cd ~/rcx-code'
+alias tm='tmux -f ~/.tmux.conf; cd ~'
+alias cont='cd ~/rcx-devops/docker'
+alias control='cd ~/rcx-devops/docker/build/aws-control'
+alias reglogin='aws --profile docker-registry ecr get-login --no-include-email |bash'
