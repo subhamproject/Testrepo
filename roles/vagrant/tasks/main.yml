@@ -29,6 +29,7 @@
      - curl
      - git
      - tmux
+     - samba
      - mongodb-org-shell
      - mongodb-org-tools
      - python3.6
@@ -37,6 +38,8 @@
 
     notify:
      - start docker
+     - start samba
+     
   - name: "Adding rcxdev user to docker group"
     user:
        name=rcxdev
