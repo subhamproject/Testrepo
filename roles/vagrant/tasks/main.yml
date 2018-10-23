@@ -5,6 +5,7 @@
      dest: /etc/ansible/ansible.cfg
      line: 'deprecation_warnings = False'
      insertafter: '\[defaults\]'
+     backup: yes
   - name: "Adding APT keys for Docker"
     apt_key: url="{{ item }}" state=present
     with_items:
@@ -30,6 +31,10 @@
      - git
      - tmux
      - samba
+     - samba-client
+     - samba-common
+     - dos2unix
+     - cifs-utils
      - mongodb-org-shell
      - mongodb-org-tools
      - python3.6
@@ -39,7 +44,7 @@
     notify:
      - start docker
      - start samba
-     
+
   - name: "Adding rcxdev user to docker group"
     user:
        name=rcxdev
@@ -59,6 +64,11 @@
     ignore_errors: true
     no_log: true
     register: pip_is_installed
+  - name: "Check if samba user exist"
+    shell: "pdbedit -u {{ user }}"
+    ignore_errors: true
+    no_log: true
+    register: user_exist
   - name: "Download get-pip.py"
     get_url: url=https://bootstrap.pypa.io/get-pip.py  dest=/tmp
   - name: "Installing pip"
@@ -89,6 +99,7 @@
      - "~/.prv/pfiles"
      - "~/.aws"
      - "~/.ssh"
+     - "~/rcx-code"
   - name: "Copy custom entry file"
     copy: src=files/custom-entry.sh dest=~/.prv/pfiles
   - name: "Copy home files"
@@ -110,10 +121,35 @@
      dest: ~/.aws/.
     with_fileglob:
      - ../files/home/.aws/*
-  - name: "Add our custom-entry file to the loading sequence"
+  - name: "Add custom-entry file to the loading sequence"
     shell:
      cmd: |
        FILES=~/.prv/pfiles
-       grep custom-entry ~/.bashrc 2>&1 >/dev/null || 
+       grep custom-entry ~/.bashrc 2>&1 >/dev/null ||
        echo ". $FILES/custom-entry.sh" >> ~/.bashrc
     when: "ansible_distribution == 'Ubuntu'"
+  - name: "Creating samba user"
+    shell:
+     cmd: |
+       smbpasswd -a {{ user }}<<EOF
+       {{ password }}
+       {{ password }}
+       EOF
+    when: user_exist.rc != 0
+  - name: "Configuring samba"
+    blockinfile:
+      dest: /etc/samba/smb.conf
+      insertbefore: '\[global\]'
+      backup: yes
+      content: |
+       [rcx-code]
+       comment = Samba on Ubuntu
+       path = /home/rcxdev/rcx-code
+       read only = no
+       browsable = yes
+       writable = yes
+       create mask = 0644
+       directory mask = 0755
+       force user = rcxdev
+    notify:
+     - restart samba
