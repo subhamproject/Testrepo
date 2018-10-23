@@ -144,7 +144,7 @@
       content: |
        [rcx-code]
        comment = Samba on Ubuntu
-       path = /home/rcxdev/rcx-code
+       path = ~/rcx-code
        read only = no
        browsable = yes
        writable = yes
