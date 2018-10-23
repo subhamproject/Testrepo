@@ -6,3 +6,5 @@
   service: name=docker state=restarted
 - name: start samba
   service: name=smbd  state=started
+- name: restart samba
+  service: name=smbd  state=restarted
