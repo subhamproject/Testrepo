@@ -99,6 +99,9 @@
      - "~/.prv/pfiles"
      - "~/.aws"
      - "~/.ssh"
+  - name: "Create samba share root directory"
+    file: path={{ item }} state=directory owner=root group=root mode=0755
+    with_items:
      - "~/rcx-code"
   - name: "Copy custom entry file"
     copy: src=files/custom-entry.sh dest=~/.prv/pfiles
@@ -144,7 +147,7 @@
       content: |
        [rcx-code]
        comment = Samba on Ubuntu
-       path = ~/rcx-code
+       path = /home/rcxdev/rcx-code
        read only = no
        browsable = yes
        writable = yes
