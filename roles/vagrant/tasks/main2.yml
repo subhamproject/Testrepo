@@ -1,0 +1,189 @@
+---
+# tasks file for vagrant
+  - name: "config change in ansible.cfg"
+    lineinfile:
+     dest: /etc/ansible/ansible.cfg
+     line: 'deprecation_warnings = False'
+     insertafter: '\[defaults\]'
+     backup: yes
+    become: true
+  - name: "Adding APT keys for Docker"
+    apt_key: url="{{ item }}" state=present
+    with_items:
+     - 'https://download.docker.com/linux/ubuntu/gpg'
+    when: "ansible_distribution == 'Ubuntu'"
+    become: true
+  - name: "Adding APT keys for Mongodb"
+    apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=0C49F3730359A14518585931BC711F9BA15703C6
+    when: "ansible_distribution == 'Ubuntu'"
+    become: true
+  - name: "Adding Repositories"
+    apt_repository: repo="{{ item }}" state=present
+    with_items:
+     - 'deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse'
+     - 'deb https://download.docker.com/linux/ubuntu xenial stable'
+     - 'ppa:deadsnakes/ppa'
+     - 'ppa:openjdk-r/ppa'
+    when: "ansible_distribution == 'Ubuntu'"
+    become: true
+  - name: "Installing packages"
+    apt: pkg="{{ item }}" update_cache=yes state=present
+    with_items:
+     - docker-ce
+     - wget
+     - curl
+     - git
+     - tmux
+     - samba
+     - whois
+     - samba-client
+     - samba-common
+     - dos2unix
+     - cifs-utils
+     - mongodb-org-shell
+     - mongodb-org-tools
+     - python3.6
+     - openjdk-8-jdk
+    when: "ansible_distribution == 'Ubuntu'"
+    become: true
+
+    notify:
+     - start docker
+     - start samba
+
+  - name: "Check if user already exist"
+    shell: "grep -q $(whoami) /etc/passwd"
+    ignore_errors: true
+    no_log: true
+    register: user_exist
+  - name: "Getting logged in user name"
+    shell: "id -nu"
+    ignore_errors: true
+    no_log: true
+    register: user
+  - name: "Adding user to docker group if already exist"
+    shell:
+     cmd: |
+       usermod -a -G docker {{ user.stdout }}
+    when: user_exist.rc == 0 and "ansible_distribution == 'Ubuntu'"
+    become: true
+  - name: "Installing docker compose"
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.22.0/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}
+      dest: /usr/bin/docker-compose
+      force: True
+      mode: 0755
+    when: "ansible_distribution == 'Ubuntu'"
+    become: true
+  - name: "Check if pip is already installed"
+    shell: "pip --version"
+    ignore_errors: true
+    no_log: true
+    register: pip_is_installed
+    become: true
+  - name: "Check if samba user exist"
+    shell: "pdbedit -u {{ user }}"
+    ignore_errors: true
+    no_log: true
+    register: user_exist
+    become: true
+  - name: "Download get-pip.py"
+    get_url: url=https://bootstrap.pypa.io/get-pip.py  dest=/tmp
+  - name: "Installing pip"
+    shell: "python /tmp/get-pip.py"
+    when: pip_is_installed.rc != 0
+    become: true
+  - name: "Installing  awscli using pip"
+    pip: name=awscli
+    when: "ansible_distribution == 'Ubuntu'"
+    become: true
+  - name: "Check docker storage group"
+    shell: "docker info|grep -q overlay2"
+    ignore_errors: true
+    no_log: true
+    register: docker_driver
+    become: true
+  - name: "Change docker driver"
+    shell:
+     cmd: |
+       cat > /etc/docker/daemon.json <<DOCKER
+       {
+         "storage-driver": "overlay2"
+       }
+       DOCKER
+    when: docker_driver.rc != 0
+    become: true
+    notify:
+       - restart docker
+  - name: "Creating neccessary folders"
+    file: path={{ item }} state=directory mode=0755 recurse=yes
+    with_items:
+     - "~/.prv/pfiles"
+     - "~/.aws"
+     - "~/.ssh"
+  - name: "Create samba share root directory"
+    file: path={{ item }} state=directory mode=0755 recurse=yes
+    with_items:
+     - "~/rcx-code"
+  - name: "Copy custom entry file"
+    copy: src=files/custom-entry.sh dest=~/.prv/pfiles mode=0644
+  - name: "Copy home files"
+    copy:
+      src: "{{ item}}"
+      dest: ~/.
+      mode: 0644
+    with_fileglob:
+     - ../files/home/.*
+  - name: "copy ssh files"
+    copy:
+     src: "{{ item }}"
+     dest: ~/.ssh/.
+     mode: 0600
+    with_fileglob:
+     - ../files/ssh/.*
+  - name: "Copying aws config file"
+    copy:
+     src: "{{ item }}"
+     dest: ~/.aws/.
+     mode: 0644
+    with_fileglob:
+     - ../files/home/.aws/*
+  - name: "Add custom-entry file to the loading sequence"
+    shell:
+     cmd: |
+       FILES=~/.prv/pfiles
+       grep custom-entry ~/.bashrc 2>&1 >/dev/null ||
+       echo ". $FILES/custom-entry.sh" >> ~/.bashrc
+    when: "ansible_distribution == 'Ubuntu'"
+  - name: "Logged in user"
+    shell: "id -nu"
+    ignore_errors: true
+    no_log: true
+    register: user_id
+  - name: "Creating samba user"
+    shell:
+     cmd: |
+       smbpasswd -a {{ user_id.stdout }}<<EOF
+       {{ password }}
+       {{ password }}
+       EOF
+    when: "ansible_distribution == 'Ubuntu'"
+    become: true
+  - name: "Configuring samba"
+    blockinfile:
+      dest: /etc/samba/smb.conf
+      insertbefore: '\[global\]'
+      backup: yes
+      content: |
+       [rcx-code]
+       comment = Samba on Ubuntu
+       path = /home/rcxdev/rcx-code
+       read only = no
+       browsable = yes
+       writable = yes
+       create mask = 0644
+       directory mask = 0755
+       force user = rcxdev
+    become: true
+    notify:
+     - restart samba
