@@ -31,6 +31,7 @@
      - git
      - tmux
      - samba
+     - whois
      - samba-client
      - samba-common
      - dos2unix
@@ -45,13 +46,26 @@
      - start docker
      - start samba
 
+  - name: "Check if rcxdev user already exist"
+    shell: "grep -q rcxdev /etc/passwd"
+    ignore_errors: true
+    no_log: true
+    register: user_exist
   - name: "Adding rcxdev user to docker group"
     user:
        name=rcxdev
-       groups=docker
+       groups=docker,sudo
        append=yes
+       home=/home/rcxdev
        shell=/bin/bash
-    when: "ansible_distribution == 'Ubuntu'"
+       password={{ user_password }}
+    when: user_exist.rc != 0
+  - name: "Adding rcxdev to docker group if already exist"
+    shell:
+     cmd: |
+       usermod -a -G docker rcxdev
+       usermod -a -G sudo rcxdev
+    when: user_exist.rc == 0 and "ansible_distribution == 'Ubuntu'"
   - name: "Installing docker compose"
     get_url:
       url: https://github.com/docker/compose/releases/download/1.22.0/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}
@@ -94,42 +108,50 @@
     notify:
        - restart docker
   - name: "Creating neccessary folders"
-    file: path={{ item }} state=directory
+    file: path={{ item }} state=directory owner=rcxdev group=rcxdev mode=0755 recurse=yes
     with_items:
-     - "~/.prv/pfiles"
-     - "~/.aws"
-     - "~/.ssh"
+     - "~rcxdev/.prv/pfiles"
+     - "~rcxdev/.aws"
+     - "~rcxdev/.ssh"
   - name: "Create samba share root directory"
-    file: path={{ item }} state=directory owner=root group=root mode=0755
+    file: path={{ item }} state=directory owner=rcxdev group=rcxdev mode=0755 recurse=yes
     with_items:
-     - "~/rcx-code"
+     - "~rcxdev/rcx-code"
   - name: "Copy custom entry file"
-    copy: src=files/custom-entry.sh dest=~/.prv/pfiles
+    copy: src=files/custom-entry.sh dest=~rcxdev/.prv/pfiles owner=rcxdev group=rcxdev mode=0644
   - name: "Copy home files"
     copy:
       src: "{{ item}}"
-      dest: ~/.
+      dest: ~rcxdev/.
+      owner: rcxdev
+      group: rcxdev
+      mode: 0644
     with_fileglob:
      - ../files/home/.*
   - name: "copy ssh files"
     copy:
      src: "{{ item }}"
-     dest: ~/.ssh/.
+     dest: ~rcxdev/.ssh/.
+     owner: rcxdev
+     group: rcxdev
      mode: 0600
     with_fileglob:
      - ../files/ssh/.*
   - name: "Copying aws config file"
     copy:
      src: "{{ item }}"
-     dest: ~/.aws/.
+     dest: ~rcxdev/.aws/.
+     owner: rcxdev
+     group: rcxdev
+     mode: 0644
     with_fileglob:
      - ../files/home/.aws/*
   - name: "Add custom-entry file to the loading sequence"
     shell:
      cmd: |
-       FILES=~/.prv/pfiles
-       grep custom-entry ~/.bashrc 2>&1 >/dev/null ||
-       echo ". $FILES/custom-entry.sh" >> ~/.bashrc
+       FILES=~rcxdev/.prv/pfiles
+       grep custom-entry ~rcxdev/.bashrc 2>&1 >/dev/null ||
+       echo ". $FILES/custom-entry.sh" >> ~rcxdev/.bashrc
     when: "ansible_distribution == 'Ubuntu'"
   - name: "Creating samba user"
     shell:
