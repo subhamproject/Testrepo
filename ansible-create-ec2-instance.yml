@@ -13,18 +13,29 @@
     ec2:
        key_name: "{{ keypair }}"
        group: default
-       count: 2
+       count: 1
        instance_type: "{{ instance_type }}"
        image: "{{ image }}"
        wait: true
        monitoring: no
        wait_timeout: 500
        instance_tags:
-         Name: prod-server
+         Name: Mongo-DB-Server
          Owner: Subham
        region: "{{ region }}"
-       aws_access_key: XXXXXXXXXXXXXX
-       aws_secret_key: XXXXXXXXXXXXXXXXXXXXXXXX
+       user_data: |
+                  #!/bin/bash
+                  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6 \
+                  && echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+                   apt-get update
+                   apt-get install -y --no-install-recommends \
+                   mongodb-org-shell \
+                   mongodb-org-tools \
+                   mongodb-org
+                   sleep 5
+                   systemctl start mongod
+       aws_access_key: XXXXXXXXXXXX
+       aws_secret_key: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
     register: ec2
   - name: "Print all ec2 variables"
     debug: var=ec2
