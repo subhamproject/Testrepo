@@ -1,0 +1,30 @@
+---
+- name: "Create AWS instance"
+  hosts: localhost
+  become: true
+  gather_facts: true
+  vars:
+    keypair: jenkins-aws
+    region: ap-south-1
+    instance_type: t2.micro
+    image: ami-04ea996e7a3e7ad6b
+  tasks:
+  - name: "Launch Instance"
+    ec2:
+       key_name: "{{ keypair }}"
+       group: default
+       count: 2
+       instance_type: "{{ instance_type }}"
+       image: "{{ image }}"
+       wait: true
+       monitoring: no
+       wait_timeout: 500
+       instance_tags:
+         Name: prod-server
+         Owner: Subham
+       region: "{{ region }}"
+       aws_access_key: XXXXXXXXXXXXXX
+       aws_secret_key: XXXXXXXXXXXXXXXXXXXXXXXX
+    register: ec2
+  - name: "Print all ec2 variables"
+    debug: var=ec2
