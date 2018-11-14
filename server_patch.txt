@@ -1,0 +1,4 @@
+https://encoretechnologies.github.io/blog/2018/06/ansiblepatchingautomation/
+
+
+above link is to patch linux server
