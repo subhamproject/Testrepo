@@ -3,3 +3,22 @@ https://stackoverflow.com/questions/42883909/passing-variables-to-ansible-roles
 https://blog.theodo.fr/2015/10/best-practices-to-build-great-ansible-playbooks/
 
 https://ansible-docs.readthedocs.io/zh/stable-2.0/rst/playbooks_roles.html
+
+
+https://github.com/ansible/ansible-examples/blob/master/language_features/roletest.yml
+
+
+example below
+
+
+- hosts: localhost
+  roles:
+   - { role: db, package: ["git", "vim", "samba"] }
+
+
+[root@docker-server tmp]# cat roles/db/tasks/main.yml
+---
+- name: "install packages"
+  yum: pkg={{ item }} state=present
+  with_items:
+    - "{{ package }}"
