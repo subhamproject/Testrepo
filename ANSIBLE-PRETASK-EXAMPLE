@@ -1,0 +1,72 @@
+---
+- hosts: all
+  gather_facts: true
+  vars:
+  pre_tasks:
+  - name: install python
+    raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python python-pip python3 python3-pip)"
+    register: output
+    changed_when: output.stdout != ""
+  tasks:
+  
+  
+  
+  
+  ---
+- hosts: all
+  become: true
+  gather_facts: false
+  pre_tasks:
+  - name: Install python2 for Ansible
+    raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+    register: output
+    changed_when: output.stdout != ""
+  - name: Gathering Facts
+    setup:
+  tasks:
+  - name: Install NGINX
+    apt: name=nginx state=latest
+  - debug: msg="{{ ansible_nodename }} (via Gathered Facts from 'setup')"
+  
+  
+  
+  
+  tasks:
+    - name: Creating es ec2 instance 
+      ec2:
+        region: us-west-2
+        assign_public_ip: yes
+        image: "{{ aws_base_amis.debian }}"
+        wait: yes
+      register: result_ec2_instance
+
+    - name: Storing ec2 facts
+      set_fact:
+        aws_elasticsearch_ec2_instance: "{{ result_ec2_instance.instances | first }}"
+      when: result_ec2_instance.changed
+
+    - name: Waiting for ssh to spin up
+      wait_for:
+        host: "{{ aws_elasticsearch_ec2_instance.public_ip }}"
+        port: 22
+
+    - name: Adding ec2 instance as host for running python 2 install
+      add_host:
+        name: special_host_name
+        ansible_host: "{{ aws_elasticsearch_ec2_instance.public_ip }}"
+        ansible_port: 22
+        ansible_user: ubuntu
+        ansible_private_key_file: "XXXX.pem"
+
+    - name: Installing python
+      delegate_to: special_host_name
+      raw: test -e /usr/bin/python || (sudo apt -y update && sudo apt install -y python-minimal)
+      
+      
+      
+      - hosts: all
+  gather_facts: False
+  
+  tasks:
+  - name: install python 2
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
