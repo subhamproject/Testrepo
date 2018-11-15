@@ -22,3 +22,25 @@ example below
   yum: pkg={{ item }} state=present
   with_items:
     - "{{ package }}"
+
+
+you can also conditionally apply roles like so:
+- hosts: webservers
+  roles:
+    - { role: some_role, when: "ansible_os_family == 'RedHat'" }
+    
+    
+  
+ PRE-Tasks example:
+ 
+ - hosts: localhost
+  pre_tasks:
+  - name: "Install few packages"
+    yum: pkg=git state=present
+  roles:
+   - { role: db, package: ["git", "vim", "samba"] }
+   - { role: db, when: "ansible_os_family == 'RedHat'" }
+
+    
+    
+    
