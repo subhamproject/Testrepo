@@ -1,3 +1,32 @@
 https://rbgeek.wordpress.com/2014/07/18/amazon-iam-user-creation-for-single-s3-bucket-access/
 
 above link can be used for the refernce to create policy to grant access to single user to single bucket
+
+
+{
+ "Version": "2012-10-17",
+ "Statement": [
+ {
+ "Effect": "Allow",
+ "Action": "s3:ListAllMyBuckets",
+ "Resource": "arn:aws:s3:::*"
+ },
+ {
+ "Effect": "Allow",
+ "Action": [
+   "s3:ListBucket",
+   "s3:GetBucketLocation" 
+ ],
+ "Resource": [ "arn:aws:s3:::mvn-artifacts-repo"]
+ },
+ {
+ "Effect": "Allow",
+ "Action": [ 
+   "s3:PutObject", 
+   "s3:GetObject", 
+   "s3:DeleteObject"
+ ],
+ "Resource": [ "arn:aws:s3:::mvn-artifacts-repo/*"]
+ }
+ ]
+}
