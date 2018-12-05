@@ -1,3 +1,4 @@
 https://github.com/jenkinsci/generic-webhook-trigger-plugin/issues/65
 https://github.com/jenkinsci/generic-webhook-trigger-plugin/issues/5
 https://github.com/jenkinsci/generic-webhook-trigger-plugin/pull/72
+https://hk.saowen.com/a/17963566b5f54178a14d779d5f28fc4f981eb63f17f5a348f67133e7710cce47
