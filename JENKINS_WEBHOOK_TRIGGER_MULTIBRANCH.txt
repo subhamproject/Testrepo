@@ -1,0 +1,3 @@
+https://github.com/jenkinsci/generic-webhook-trigger-plugin/issues/65
+https://github.com/jenkinsci/generic-webhook-trigger-plugin/issues/5
+https://github.com/jenkinsci/generic-webhook-trigger-plugin/pull/72
