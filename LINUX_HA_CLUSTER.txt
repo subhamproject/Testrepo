@@ -1,0 +1,2 @@
+https://www.itzgeek.com/how-tos/linux/centos-how-tos/configure-high-avaliablity-cluster-on-centos-7-rhel-7.html
+https://www.linuxtechi.com/configure-nfs-server-clustering-pacemaker-centos-7-rhel-7/
