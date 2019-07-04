@@ -1,0 +1,1 @@
+echo -e "$(sudo crontab -u root -l)\n*/10 * * * *  ntpq -p >> /dev/null" | sudo crontab -u root -
