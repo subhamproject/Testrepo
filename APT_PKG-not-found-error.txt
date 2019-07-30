@@ -1,1 +1,3 @@
+ModuleNotFoundError No module named apt_pkg
+
 https://stackoverflow.com/questions/48677553/modulenotfounderror-no-module-named-apt-pkg
