@@ -1,0 +1,7 @@
+7. How to create directory and switch to it using single command
+If you want, you can create a directory and also move to that directory by using a single command. To do this, run the following command:
+
+$ mkdir [dir-name] && cd $_
+For example:
+
+$ mkdir howtoforge && cd $_
