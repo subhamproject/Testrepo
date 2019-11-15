@@ -1,0 +1,21 @@
+https://stackoverflow.com/questions/43224436/splitting-variable-not-working-in-ansible
+
+
+https://www.mydailytutorials.com/how-to-split-strings-and-join-them-in-a​nsibl​e/
+
+
+- hosts: all
+  vars:
+    ip: "192.168.14.21"
+  tasks:
+  - debug:
+      msg: "{{ ip.split('.') }}"
+
+output
+------
+    "msg": [
+        "192", 
+        "168", 
+        "14", 
+        "21"
+    ]
