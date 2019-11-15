@@ -1,0 +1,52 @@
+---
+- name: This playbook will be used to configure lvm
+  hosts: localhost
+  gather_facts: false
+  vars:
+    disk: /dev/loop12
+    lv_name : subham-lv
+    vg_name : subham-vg
+
+  pre_tasks:
+  - name: preinstall packages
+    package:
+      name: bc
+      state: present
+
+  tasks:
+  - name: verify if disk is present in server
+    shell: if cat /proc/partitions |grep -w "{{ disk.split('/')[2] }}" > /dev/null ;then echo 'disk_present' ;else echo 'disk_not_present';fi
+    ignore_errors: true
+    register: disk_check
+
+  - name: verify if disk size is greater 1500MiB
+    shell:
+     cmd: |
+       DISK_SIZE=$(echo $(cat /proc/partitions |grep -w "{{ disk.split('/')[2] }}"|awk '{print $3}') / 1024|bc)
+       if [ ${DISK_SIZE} -ge 1500 ];then echo 'enough_disk_size';else echo 'not_enough_disk_size';fi
+    ignore_errors: true
+    register: disk_size
+
+  - name: Create physical volume and volumegroup if disk exist in this server
+    block:
+      - name: Creating physical volume and vg
+        shell:
+         cmd: |
+           pvcreate {{ disk }} && \
+           vgcreate {{ vg_name }} {{ disk }}
+    rescue:
+      - debug:
+          msg: "Disk does not exist in this server"
+    when: disk_check.stdout == "disk_present"  or disk_check.stdout == "disk_not_present"
+
+  - name: Create filesystem if disk space is more than 1500MiB
+    block:
+      - name: Creating logical volume and fs
+        shell:
+         cmd: |
+           lvcreate -L 1500M -n {{ lv_name }} {{ vg_name }} && \
+           mkfs.ext4 /dev/{{ vg_name }}/{{ lv_name }}
+    rescue:
+      - debug:
+          msg: "Cant create lvm of mentioned size"
+    when: disk_size.stdout == "enough_disk_size" or disk_size.stdout == "not_enough_disk_size"
