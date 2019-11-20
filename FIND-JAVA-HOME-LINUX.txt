@@ -1,0 +1,7 @@
+https://www.baeldung.com/find-java-home
+
+dirname $(dirname $(readlink -f $(which java)))
+
+[root@elk3 ~]# dirname $(dirname $(readlink -f $(which java)))
+/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.232.b09-0.el7_7.x86_64/jre
+[root@elk3 ~]#
